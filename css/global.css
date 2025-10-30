@@ -1,0 +1,97 @@
+:root {
+    --bs-primary-rgb: 13, 110, 253;
+    --bs-body-font-family: "Inter", sans-serif;
+    --bs-border-radius: 0.5rem;
+    --bs-border-radius-lg: 0.75rem;
+}
+
+body {
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+}
+
+#app-shell {
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+.search-container {
+    position: relative;
+    width: 100px;
+    opacity: 0;
+    transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.search-container.active {
+    width: 600px;
+    opacity: 1;
+}
+
+.search-container .form-control:focus {
+    box-shadow: none; /* remove blue glow */
+    border-color: var(--bs-primary); /* keep a neat border highlight */
+    outline: none; /* remove native outline */
+}
+
+.search-container .search-results-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: var(--bs-border-radius);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 0.5rem;
+}
+.search-results-dropdown.show {
+    display: block;
+}
+.autocomplete-item,
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: #212529;
+}
+.autocomplete-item:hover,
+.history-item:hover {
+    background-color: #f8f9fa;
+}
+.autocomplete-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--bs-border-radius);
+    margin-right: 1rem;
+}
+
+/* Toast container base */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1090;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+}
+
+.star-rating {
+    color: #ffc107;
+}
+
+.navbar {
+    display: none;
+    position: sticky;
+    top: 0;
+    color: black;
+    z-index: 1030;
+    padding: 0.75rem 0 0.75rem 0;
+}
