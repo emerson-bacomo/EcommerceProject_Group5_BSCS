@@ -34,13 +34,19 @@ export function setupAppListeners() {
     });
 
     document.getElementById("prompt-login-btn").addEventListener("click", () => {
+        const modalEl = document.getElementById("promptLoginModal");
         // eslint-disable-next-line no-undef
-        new bootstrap.Modal(document.getElementById("promptLoginModal")).hide();
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+
         navigateTo("login-view");
     });
     document.getElementById("prompt-signup-btn").addEventListener("click", () => {
+        const modalEl = document.getElementById("promptLoginModal");
         // eslint-disable-next-line no-undef
-        new bootstrap.Modal(document.getElementById("promptLoginModal")).hide();
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+
         navigateTo("signup-view");
     });
     document.getElementById("view-orders-btn").addEventListener("click", () => navigateTo("orders-view"));
