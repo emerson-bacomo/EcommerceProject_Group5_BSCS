@@ -25,12 +25,6 @@ export function setupAppListeners() {
             S.buyNowItem = null;
             navigateTo("product-detail-view", productId);
         }
-
-        if (e.target.classList.contains("password-toggle")) togglePasswordVisibility(e);
-    });
-
-    document.getElementById("app-content").addEventListener("input", (e) => {
-        if (e.target.classList.contains("form-control") && e.target.closest("quantity-picker") === null) handleInputChange(e);
     });
 
     document.getElementById("prompt-login-btn").addEventListener("click", () => {
@@ -234,15 +228,4 @@ function addSearchToHistory(term) {
     S.appData.searchHistory.unshift(term);
     S.appData.searchHistory = S.appData.searchHistory.slice(0, 5);
     saveUserData(S.currentUser, S.appData);
-}
-
-function togglePasswordVisibility(e) {
-    const icon = e.target;
-    const input = icon.previousElementSibling;
-    input.type = input.type === "password" ? "text" : "password";
-    icon.classList.toggle("fa-eye");
-    icon.classList.toggle("fa-eye-slash");
-}
-function handleInputChange(e) {
-    if (e.target.classList.contains("is-invalid")) e.target.classList.remove("is-invalid");
 }

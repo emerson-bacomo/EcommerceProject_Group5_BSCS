@@ -1,54 +1,57 @@
-import { authCss } from "../../css/auth.js";
 import { showToast } from "../components/Toast.js";
 import { html } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { getUsers, setUsers } from "../utils/storage.js";
+import { authCss } from "../../css/auth.js";
+import { setupPasswordToggles, setupErrorHandling } from "../utils/formUtilities.js";
 
 export function renderSignupPage(container) {
     container.innerHTML = html`
         ${authCss}
         <div class="auth-container">
             <div class="auth-card">
-                <h4 class="mb-3 text-center fw-bold">Create an Account</h4>
+                <h4 class="text-center fw-bold">Create an Account</h4>
                 <p class="text-muted mb-4 text-center">Let's get you started!</p>
                 <form id="signup-form" novalidate>
                     <div class="mb-3">
-                        <label for="signup-username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="signup-username" required minlength="4" />
-                        <div class="invalid-feedback">Username must be at least 4 characters.</div>
+                        <label for="signup-username" class="input-label"> Username <span class="error-message"></span> </label>
+                        <input type="text" id="signup-username" class="input-field" required minlength="4" />
                     </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="signup-firstname" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="signup-firstname" required />
-                            <div class="invalid-feedback">Please enter your first name.</div>
+                            <label for="signup-firstname" class="input-label">
+                                First Name <span class="error-message"></span>
+                            </label>
+                            <input type="text" id="signup-firstname" class="input-field" required />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="signup-lastname" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="signup-lastname" required />
-                            <div class="invalid-feedback">Please enter your last name.</div>
+                            <label for="signup-lastname" class="input-label">
+                                Last Name <span class="error-message"></span>
+                            </label>
+                            <input type="text" id="signup-lastname" class="input-field" required />
                         </div>
                     </div>
 
                     <div class="mb-3 position-relative">
-                        <label for="signup-password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="signup-password" required minlength="8" />
+                        <label for="signup-password" class="input-label"> Password <span class="error-message"></span> </label>
+                        <input type="password" id="signup-password" class="input-field" required minlength="8" />
                         <i class="fas fa-eye password-toggle"></i>
-                        <div id="password-help" class="form-text">Password must be at least 8 characters long.</div>
-                        <div class="invalid-feedback">Password is too short.</div>
                     </div>
 
                     <div class="mb-4 position-relative">
-                        <label for="signup-confirm-password" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="signup-confirm-password" required />
+                        <label for="signup-confirm-password" class="input-label">
+                            Confirm Password <span class="error-message"></span>
+                        </label>
+                        <input type="password" id="signup-confirm-password" class="input-field" required />
                         <i class="fas fa-eye password-toggle"></i>
-                        <div class="invalid-feedback">Passwords do not match.</div>
                     </div>
 
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
                     </div>
                 </form>
+
                 <p class="text-center text-muted mt-4 mb-0">
                     Already have an account? <a href="#" data-page="login-view">Login</a>
                 </p>
@@ -59,54 +62,46 @@ export function renderSignupPage(container) {
         </div>
     `;
 
-    document.querySelector("#signup-form").addEventListener("submit", (e) => {
-        const form = e.target;
-        let isValid = true;
+    const form = document.querySelector("#signup-form");
 
-        form.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
+    setupPasswordToggles(form);
+    const { showError, clearError, fields } = setupErrorHandling(form, [
+        "#signup-username",
+        "#signup-firstname",
+        "#signup-lastname",
+        "#signup-password",
+        "#signup-confirm-password",
+    ]);
 
-        const username = form.querySelector("#signup-username");
-        if (username.value.length < 4) {
-            username.classList.add("is-invalid");
-            isValid = false;
-        }
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const [username, firstName, lastName, password, confirmPassword] = fields;
         const users = getUsers();
-        if (users.some((u) => u.username === username.value)) {
-            username.classList.add("is-invalid");
-            username.nextElementSibling.textContent = "Username is already taken.";
-            isValid = false;
-        } else {
-            username.nextElementSibling.textContent = "Username must be at least 4 characters.";
-        }
-        const firstName = form.querySelector("#signup-firstname");
-        if (firstName.value.trim() === "") {
-            firstName.classList.add("is-invalid");
-            isValid = false;
-        }
-        const lastName = form.querySelector("#signup-lastname");
-        if (lastName.value.trim() === "") {
-            lastName.classList.add("is-invalid");
-            isValid = false;
-        }
-        const password = form.querySelector("#signup-password");
-        if (password.value.length < 8) {
-            password.classList.add("is-invalid");
-            isValid = false;
-        }
-        const confirmPassword = form.querySelector("#signup-confirm-password");
-        if (password.value !== confirmPassword.value || confirmPassword.value === "") {
-            confirmPassword.classList.add("is-invalid");
-            isValid = false;
-        }
-        if (!isValid) return;
-        const newUser = {
+
+        fields.forEach(clearError);
+
+        if (!username.value.trim()) showError(username, "(required)");
+        else if (username.value.length < 4) showError(username, "(min 4)");
+        else if (users.some((u) => u.username === username.value)) showError(username, "(taken)");
+
+        if (!firstName.value.trim()) showError(firstName, "(required)");
+        if (!lastName.value.trim()) showError(lastName, "(required)");
+
+        if (!password.value) showError(password, "(required)");
+        else if (password.value.length < 8) showError(password, "(less than 8)");
+
+        if (!confirmPassword.value) showError(confirmPassword, "(required)");
+        else if (confirmPassword.value !== password.value) showError(confirmPassword, "(mismatch)");
+
+        if (form.querySelectorAll(".error-visible").length > 0) return;
+
+        users.push({
             username: username.value,
             firstName: firstName.value,
             lastName: lastName.value,
             password: password.value,
-        };
+        });
 
-        users.push(newUser);
         setUsers(users);
         showToast("Sign up successful! Please log in.");
         form.reset();
