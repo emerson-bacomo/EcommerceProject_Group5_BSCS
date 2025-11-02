@@ -3,6 +3,7 @@ import { S } from "../state.js";
 import { getProductById, formatCurrency, html } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
+import { updateCartBadge } from "./CartPage.js";
 
 export function renderCheckoutPage(container, buyNowItemData = null) {
     let itemsToCheckout;
@@ -34,33 +35,45 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
         `;
         return;
     }
+
     const subtotal = itemsToCheckout.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shippingFee = 0.0;
     const total = subtotal + shippingFee;
     const addressOptions = (S.appData.profile.addresses || [])
         .map(
             (addr, index) => html`
-                <div class="form-check card card-body mb-2 position-relative">
-                    <input
-                        class="form-check-input"
-                        type="radio"
-                        name="shippingAddress"
-                        id="address${index}"
-                        value="${index}"
-                        ${index === 0 ? "checked" : ""}
-                        style="margin-top: 1.2rem;"
-                    />
-                    <label class="form-check-label w-100 ps-4" for="address${index}">
-                        <strong>${addr.name}</strong><br />
-                        ${addr.address}<br />
-                        Phone: ${addr.phone}
-                    </label>
+                <div class="card card-body mb-2 position-relative">
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="radio"
+                            name="shippingAddress"
+                            id="address${index}"
+                            value="${index}"
+                            ${index === 0 ? "checked" : ""}
+                        />
+                        <label class="form-check-label w-100" for="address${index}">
+                            <strong>${addr.name}</strong><br />
+                            ${addr.address}<br />
+                            ${addr.phone}
+                        </label>
+                    </div>
                 </div>
             `
         )
         .join("");
 
     container.innerHTML = html`
+        <style>
+            @media (min-width: 576px) {
+                .cart-item-list {
+                    max-height: 40vh;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                }
+            }
+        </style>
+
         <h1 class="mb-4">Checkout</h1>
         <div class="row g-5">
             <div class="col-md-7">
@@ -93,7 +106,7 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
                 <div class="card">
                     <div class="card-body">
                         <h4 class="mb-3">Order Summary</h4>
-                        <ul class="list-group list-group-flush">
+                        <ul class="list-group list-group-flush cart-item-list">
                             ${itemsToCheckout
                                 .map((item) => {
                                     const variationText = `${item.color && item.color !== "Default" ? item.color : ""}${
@@ -101,11 +114,24 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
                                             ? " / "
                                             : ""
                                     }${item.size && item.size !== "Standard" ? item.size : ""}`;
+                                    const displayImg =
+                                        item.product.variations?.color?.[item.color]?.image || item.product.images[0];
+
                                     return html`
                                         <li class="list-group-item d-flex justify-content-between">
-                                            <div>
-                                                ${item.product.name} (x${item.quantity})
-                                                ${variationText ? `<br><small class="text-muted">${variationText}</small>` : ""}
+                                            <div class="d-flex gap-3">
+                                                <img
+                                                    src="${displayImg}"
+                                                    alt="${item.product.name}"
+                                                    style="cursor: pointer; width: 80px; height: 80px;"
+                                                    onerror="this.onerror=null;this.src='${item.product.images[0]}';"
+                                                />
+                                                <div>
+                                                    ${item.product.name} (x${item.quantity})
+                                                    ${variationText
+                                                        ? `<br><small class="text-muted">${variationText}</small>`
+                                                        : ""}
+                                                </div>
                                             </div>
                                             <strong>${formatCurrency(item.price * item.quantity)}</strong>
                                         </li>
@@ -202,5 +228,6 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
             },
             { once: true }
         );
+        updateCartBadge();
     });
 }
