@@ -73,11 +73,14 @@ export function renderAddressManagementPage(container) {
             form.classList.add("was-validated");
             return;
         }
-        S.appData.profile.addresses = (S.appData.profile.addresses || []).push({
+        const newAddresses = S.appData.profile.addresses || [];
+        newAddresses.push({
             name: document.getElementById("addr-name").value,
             address: document.getElementById("addr-address").value,
             phone: document.getElementById("addr-phone").value,
         });
+        S.appData.profile.addresses = newAddresses;
+
         saveUserData(S.currentUser, S.appData);
         renderAddressManagementPage(container);
     });
