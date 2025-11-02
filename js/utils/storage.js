@@ -1,5 +1,7 @@
-const USERS_KEY = 'users';
-const LOGGED_IN_KEY = 'loggedInUser';
+import { updateCartBadge } from "../pages/CartPage.js";
+
+const USERS_KEY = "users";
+const LOGGED_IN_KEY = "loggedInUser";
 
 export function getUsers() {
     return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
@@ -33,6 +35,5 @@ export function loadUserData(user) {
 export function saveUserData(user, appData) {
     if (!user) return;
     localStorage.setItem(`ecommerce_data_${user.username}`, JSON.stringify(appData));
+    updateCartBadge();
 }
-
-

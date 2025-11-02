@@ -3,7 +3,6 @@ import { S } from "../state.js";
 import { getProductById, formatCurrency, html } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
-import { updateCartBadge } from "./CartPage.js";
 
 export function renderCheckoutPage(container, buyNowItemData = null) {
     let itemsToCheckout;
@@ -228,6 +227,5 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
             },
             { once: true }
         );
-        updateCartBadge();
     });
 }

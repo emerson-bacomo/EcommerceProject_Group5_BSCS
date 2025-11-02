@@ -3,7 +3,8 @@ import { setupImageViewer } from "../components/ImageViewer.js";
 import { showToast } from "../components/Toast.js";
 import { navigateTo } from "../utils/navigation.js";
 import { S } from "../state.js";
-import { findCartItem, findCartItemByKey, updateCartBadge } from "./CartPage.js";
+import { findCartItem, findCartItemByKey } from "./CartPage.js";
+import { saveUserData } from "../utils/storage.js";
 
 function getSelectedPrice(product, selectedColor, selectedSize) {
     const colors = product.variations?.color || {};
@@ -570,8 +571,7 @@ export function renderProductDetailPage(container, params) {
             price,
         });
 
-        import("../utils/storage.js").then(({ saveUserData }) => saveUserData(S.currentUser, S.appData));
-        updateCartBadge();
+        saveUserData(S.currentUser, S.appData);
         showToast(`${quantity} item(s) added to cart!`, "success", infoMessage);
     });
 }

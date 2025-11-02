@@ -239,7 +239,6 @@ export function renderCartPage(container) {
                 const itemToRemove = findCartItemByKey(e.target.dataset.cartKey);
                 if (!itemToRemove) return;
                 S.appData.cart = (S.appData.cart || []).filter((item) => item !== itemToRemove);
-                updateCartBadge();
                 saveUserData(S.currentUser, S.appData);
                 renderCartPage(container);
             }
