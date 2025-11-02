@@ -559,8 +559,17 @@ export function renderProductDetailPage(container, params) {
         errorDiv.style.display = "none";
         const existingItem = findCartItem(productId, selectedColor, selectedSize);
         let infoMessage = null;
-        if (existingItem) infoMessage = "Note: An identical item is already in your cart.";
-        S.appData.cart.push({ id: productId, quantity, selected: true, color: selectedColor, size: selectedSize, price });
+        if (existingItem) infoMessage = "Added a duplicate entry since an identical item is already in your cart.";
+        S.appData.cart.push({
+            cartId: Date.now(),
+            id: productId,
+            quantity,
+            selected: true,
+            color: selectedColor,
+            size: selectedSize,
+            price,
+        });
+
         import("../utils/storage.js").then(({ saveUserData }) => saveUserData(S.currentUser, S.appData));
         updateCartBadge();
         showToast(`${quantity} item(s) added to cart!`, "success", infoMessage);

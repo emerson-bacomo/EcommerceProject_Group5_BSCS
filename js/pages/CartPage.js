@@ -27,7 +27,7 @@ export function renderCartPage(container) {
             const itemTotal = item.price * item.quantity;
             if (item.selected) subtotal += itemTotal;
 
-            const itemIdentifier = `${item.id}|${item.color}|${item.size}`;
+            const itemIdentifier = item.cartId;
 
             const allColors = product.variations.color ? Object.keys(product.variations.color) : [];
             const allSizes =
@@ -284,12 +284,8 @@ export function findCartItem(productId, color, size) {
     );
 }
 
-export function findCartItemByKey(key) {
-    if (!key) return null;
-    const parts = key.split("|");
-    if (parts.length !== 3) return null;
-    const [id, color, size] = parts;
-    return findCartItem(id, color, size);
+export function findCartItemByKey(cartId) {
+    return (S.appData.cart || []).find((item) => item.cartId == cartId);
 }
 
 export function updateCartBadge() {
