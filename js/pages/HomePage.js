@@ -253,61 +253,61 @@ export function renderHomePage(container) {
 
     if (bannerProducts.length > 1) {
         const bannerCarouselEl = document.getElementById("homeBanner");
+        const slideNumberEl = bannerCarouselEl.querySelector(".slide-number");
+        const progressEl = bannerCarouselEl.querySelector("#banner-progress-bar");
+        const totalSlides = bannerProducts.length;
+        const duration = 5000;
+
         // eslint-disable-next-line no-undef
         const bannerCarousel = new bootstrap.Carousel(bannerCarouselEl, {
-            interval: 5000,
+            interval: duration,
             ride: "carousel",
             pause: false,
         });
 
-        const slideNumberEl = bannerCarouselEl.querySelector(".slide-number");
-        const progressEl = bannerCarouselEl.querySelector("#banner-progress-bar");
+        const startProgress = () => {
+            progressEl.style.transition = "none";
+            progressEl.style.width = "0%";
 
-        let timer = null;
-        let startTime = Date.now();
-        let pausedProgress = 0;
-        const duration = 5000;
-
-        const startProgress = (resume = false) => {
-            clearInterval(timer);
-            if (!resume) pausedProgress = 0;
-            startTime = Date.now();
-
-            timer = setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                const percent = Math.min(((elapsed + pausedProgress) / duration) * 100, 100);
-                progressEl.style.width = percent + "%";
-                if (percent >= 100) clearInterval(timer);
-            }, 50);
+            requestAnimationFrame(() => {
+                progressEl.style.transition = `width ${duration}ms linear`;
+                progressEl.style.width = "100%";
+            });
         };
 
+        const pauseProgress = () => {
+            const computedWidth = (parseFloat(getComputedStyle(progressEl).width) / progressEl.parentElement.offsetWidth) * 100;
+            progressEl.style.transition = "none";
+            progressEl.style.width = `${computedWidth}%`;
+        };
+
+        // Initial start
+        startProgress();
+        slideNumberEl.textContent = `01 / ${String(totalSlides).padStart(2, "0")}`;
+
+        // On slide change, reset progress and update slide number
         bannerCarouselEl.addEventListener("slide.bs.carousel", (event) => {
-            slideNumberEl.textContent = `${String(event.to + 1).padStart(2, "0")} / ${String(bannerProducts.length).padStart(
-                2,
-                "0"
-            )}`;
-            startProgress(false);
+            slideNumberEl.textContent = `${String(event.to + 1).padStart(2, "0")} / ${String(totalSlides).padStart(2, "0")}`;
+            startProgress();
         });
 
-        ["mousedown", "touchstart"].forEach((t) =>
-            bannerCarouselEl.addEventListener(t, () => {
+        // Pause on interaction
+        ["mousedown", "touchstart"].forEach((evt) =>
+            bannerCarouselEl.addEventListener(evt, () => {
                 bannerCarousel.pause();
-                clearInterval(timer);
-                const currentWidth = parseFloat(progressEl.style.width) || 0;
-                pausedProgress = (currentWidth / 100) * duration;
+                pauseProgress();
                 bannerCarouselEl.style.cursor = "grabbing";
             })
         );
-        ["mouseup", "touchend", "mouseleave"].forEach((t) =>
-            bannerCarouselEl.addEventListener(t, () => {
+
+        // Resume on release
+        ["mouseup", "touchend", "mouseleave"].forEach((evt) =>
+            bannerCarouselEl.addEventListener(evt, () => {
                 bannerCarousel.cycle();
-                startProgress(true); // resume instead of restart
+                startProgress(); // reset progress on resume since that's what bootstrap's .cycle does
                 bannerCarouselEl.style.cursor = "default";
             })
         );
-        slideNumberEl.textContent = `01 / ${String(bannerProducts.length).padStart(2, "0")}`;
-        startProgress(false);
-        cleanUp.push(() => clearInterval(timer));
     }
 
     setupCarouselListeners();
@@ -322,7 +322,7 @@ export function renderHomePage(container) {
             navbar.classList.add("navbar-transparent-at-top");
         }
         if (scrollDownArrow) {
-            if (scrollY > 20) scrollDownArrow.classList.add("hidden");
+            if (scrollY > 30) scrollDownArrow.classList.add("hidden");
             else scrollDownArrow.classList.remove("hidden");
         }
     }
