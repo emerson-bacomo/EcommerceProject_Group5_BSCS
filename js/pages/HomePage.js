@@ -8,6 +8,7 @@ import {
 import { navbar } from "../main.js";
 import { navigateTo } from "../utils/navigation.js";
 import { createProductCard } from "../components/ProductCard.js";
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 
 export function renderHomePage(container) {
     const bannerProducts = products.filter((p) => p.banner);
@@ -57,6 +58,7 @@ export function renderHomePage(container) {
                           font-size: 1.25rem;
                           text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
                       }
+
                       .banner-carousel-controls {
                           position: absolute;
                           bottom: 30px;
@@ -119,7 +121,34 @@ export function renderHomePage(container) {
                           opacity: 0;
                           pointer-events: none;
                       }
-
+                      @media (max-width: ${mobileMaxWidthPlus1}px) {
+                          .banner-content {
+                              margin-left: 1rem;
+                          }
+                          .banner-content h1 {
+                              font-size: 2.5rem;
+                          }
+                          .banner-content p {
+                              font-size: 1rem;
+                          }
+                          .banner-carousel-controls {
+                              display: flex;
+                              flex-direction: column-reverse;
+                              padding-top: 1rem;
+                              bottom: 15px;
+                              right: 15px;
+                          }
+                          .slide-number {
+                              font-size: 14px;
+                          }
+                          .slide-progress-wrapper {
+                              width: 40px;
+                          }
+                          .banner-scroll-down {
+                              bottom: 10px;
+                              font-size: 1.5rem;
+                          }
+                      }
                       .product-section-title {
                           font-weight: 700;
                           margin-bottom: 1.5rem;
@@ -225,43 +254,59 @@ export function renderHomePage(container) {
     if (bannerProducts.length > 1) {
         const bannerCarouselEl = document.getElementById("homeBanner");
         // eslint-disable-next-line no-undef
-        const bannerCarousel = new bootstrap.Carousel(bannerCarouselEl, { interval: 5000, ride: "carousel", pause: false });
+        const bannerCarousel = new bootstrap.Carousel(bannerCarouselEl, {
+            interval: 5000,
+            ride: "carousel",
+            pause: false,
+        });
+
         const slideNumberEl = bannerCarouselEl.querySelector(".slide-number");
         const progressEl = bannerCarouselEl.querySelector("#banner-progress-bar");
+
         let timer = null;
         let startTime = Date.now();
-        const startProgress = () => {
+        let pausedProgress = 0;
+        const duration = 5000;
+
+        const startProgress = (resume = false) => {
             clearInterval(timer);
-            progressEl.style.width = "0%";
+            if (!resume) pausedProgress = 0;
             startTime = Date.now();
+
             timer = setInterval(() => {
-                const percent = Math.min(((Date.now() - startTime) / 5000) * 100, 100);
+                const elapsed = Date.now() - startTime;
+                const percent = Math.min(((elapsed + pausedProgress) / duration) * 100, 100);
                 progressEl.style.width = percent + "%";
+                if (percent >= 100) clearInterval(timer);
             }, 50);
         };
+
         bannerCarouselEl.addEventListener("slide.bs.carousel", (event) => {
             slideNumberEl.textContent = `${String(event.to + 1).padStart(2, "0")} / ${String(bannerProducts.length).padStart(
                 2,
                 "0"
             )}`;
-            startProgress();
+            startProgress(false);
         });
+
         ["mousedown", "touchstart"].forEach((t) =>
             bannerCarouselEl.addEventListener(t, () => {
                 bannerCarousel.pause();
                 clearInterval(timer);
+                const currentWidth = parseFloat(progressEl.style.width) || 0;
+                pausedProgress = (currentWidth / 100) * duration;
                 bannerCarouselEl.style.cursor = "grabbing";
             })
         );
         ["mouseup", "touchend", "mouseleave"].forEach((t) =>
             bannerCarouselEl.addEventListener(t, () => {
                 bannerCarousel.cycle();
-                startProgress();
+                startProgress(true); // resume instead of restart
                 bannerCarouselEl.style.cursor = "default";
             })
         );
         slideNumberEl.textContent = `01 / ${String(bannerProducts.length).padStart(2, "0")}`;
-        startProgress();
+        startProgress(false);
         cleanUp.push(() => clearInterval(timer));
     }
 

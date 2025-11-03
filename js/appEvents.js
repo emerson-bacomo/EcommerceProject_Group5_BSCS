@@ -22,7 +22,6 @@ export function setupAppListeners() {
         const productCard = e.target.closest("product-card");
         if (productCard) {
             const productId = productCard.dataset.productId;
-            localStorage.removeItem(`product_detail_${productId}`);
             S.buyNowItem = null;
             navigateTo("product-detail-view", productId);
         }
@@ -122,17 +121,6 @@ export function closeMenu() {
 export function updateNavUI() {
     const container = document.getElementById("nav-user-auth-links");
     const loggedInNavLinksHTML = html`
-        <a href="#" class="nav-link position-relative ms-3" id="nav-cart-link" data-page="cart-view" title="Cart">
-            <i class="fas fa-shopping-cart fa-lg"></i>
-            <span
-                id="cart-badge"
-                class="position-absolute start-0 translate-middle badge rounded-pill bg-primary"
-                style="font-size: 0.6em; display: none; "
-            >
-                0
-            </span>
-        </a>
-
         <div class="vr mx-2"></div>
         <div class="dropdown">
             <a
@@ -171,6 +159,7 @@ export function updateNavUI() {
     } else {
         container.innerHTML = loggedOutNavLinksHTML;
     }
+    document.getElementById("nav-cart-link").style.display = S.currentUser ? "block" : "none";
     updateMobileMenu();
 }
 

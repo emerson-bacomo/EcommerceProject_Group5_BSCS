@@ -64,7 +64,7 @@ function saveProductDetailState() {
         selectedSize: S.currentProductDetailState.selectedSize,
         currentQuantity: S.currentProductDetailState.currentQuantity,
     };
-    localStorage.setItem(`product_detail_${S.currentProductDetailState.productId}`, JSON.stringify(stateToSave));
+    sessionStorage.setItem(`product_detail_${S.currentProductDetailState.productId}`, JSON.stringify(stateToSave));
 }
 
 function addVariationListeners(container, product) {
@@ -212,7 +212,7 @@ export function renderProductDetailPage(container, params) {
         }
     }
     if (!loadedFromCart) {
-        const savedState = localStorage.getItem(`product_detail_${productId}`);
+        const savedState = sessionStorage.getItem(`product_detail_${productId}`);
         if (savedState) {
             const parsedState = JSON.parse(savedState);
             S.currentProductDetailState.selectedColor = parsedState.selectedColor || null;
