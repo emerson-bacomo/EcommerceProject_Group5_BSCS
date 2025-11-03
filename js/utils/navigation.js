@@ -1,5 +1,6 @@
 import { navbar } from "../main.js";
 import { S } from "../state.js";
+import { isMobile } from "./helpers.js";
 
 let currentCleanup = null;
 
@@ -23,7 +24,7 @@ export function navigateTo(pageKey, params = null, options = {}) {
             }
             break;
         default:
-            contentArea.className = "container py-5";
+            contentArea.className = `container py-${!isMobile() ? 5 : 3}`;
     }
 
     if (pageKey === "login-view" || pageKey === "signup-view") {
@@ -75,8 +76,6 @@ export function navigateTo(pageKey, params = null, options = {}) {
     if (S.views[pageKey]) {
         if (pageKey === "checkout-view" && params && params.buyNow) {
             currentCleanup = S.views[pageKey](contentArea, params.item);
-        } else if (pageKey === "address-management-view") {
-            currentCleanup = S.views[pageKey](contentArea, params ? params.fromCheckout : false);
         } else {
             currentCleanup = S.views[pageKey](contentArea, params);
         }

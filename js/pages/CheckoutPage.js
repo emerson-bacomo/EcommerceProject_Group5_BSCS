@@ -1,4 +1,5 @@
 import { showToast } from "../components/Toast.js";
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { S } from "../state.js";
 import { getProductById, formatCurrency, html } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
@@ -64,7 +65,7 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
 
     container.innerHTML = html`
         <style>
-            @media (min-width: 576px) {
+            @media (min-width: ${mobileMaxWidthPlus1}px) {
                 .cart-item-list {
                     max-height: 40vh;
                     overflow-y: auto;

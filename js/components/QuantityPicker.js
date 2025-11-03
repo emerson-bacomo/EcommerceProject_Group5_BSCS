@@ -83,11 +83,6 @@ class QuantityPicker extends HTMLElement {
                     min-width: 30px;
                     -moz-appearance: textfield;
                 }
-                .quantity-input::-webkit-outer-spin-button,
-                .quantity-input::-webkit-inner-spin-button {
-                    -webkit-appearance: none;
-                    margin: 0;
-                }
             </style>
             <div class="input-group input-group-sm">
                 <button class="btn-quantity-minus" type="button">-</button>

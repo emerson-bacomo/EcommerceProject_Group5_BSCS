@@ -1,3 +1,4 @@
+import { mobileMaxWidthPlus1 } from "../js/config/general.js";
 import { html } from "../js/utils/helpers.js";
 
 export const authCss = html`
@@ -73,7 +74,7 @@ export const authCss = html`
             color: #000;
         }
 
-        @media (max-width: 576px) {
+        @media (max-width: ${mobileMaxWidthPlus1}px) {
             .auth-card {
                 padding: 1rem 1.25rem;
             }

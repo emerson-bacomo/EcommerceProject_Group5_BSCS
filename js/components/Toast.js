@@ -1,3 +1,4 @@
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { html } from "../utils/helpers.js";
 
 export const showToast = (message, type = "success", infoMessage = null) => {
@@ -64,7 +65,7 @@ export const showToast = (message, type = "success", infoMessage = null) => {
                 box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
                 border: 1px solid white !important;
             }
-            @media (max-width: 576px) {
+            @media (max-width: ${mobileMaxWidthPlus1}px) {
                 #toast-container {
                     top: auto;
                     bottom: 1rem;
@@ -119,7 +120,7 @@ export function showConfirmationModal(body, title = "Confirmation", confirmText 
     // eslint-disable-next-line no-undef
     const modal = new bootstrap.Modal(modalEl);
     modalEl.querySelector("#customConfirmModalLabel").textContent = title;
-    modalEl.querySelector("#customConfirmModalBody").textContent = body;
+    modalEl.querySelector("#customConfirmModalBody").innerHTML = body;
     const confirmBtnOld = modalEl.querySelector("#custom-confirm-confirm-btn");
     confirmBtnOld.textContent = confirmText;
     confirmBtnOld.className = `btn ${confirmClass}`;

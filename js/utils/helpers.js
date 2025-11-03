@@ -1,4 +1,6 @@
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { products } from "../config/products.js";
+import { S } from "../state.js";
 
 export const html = (strings, ...values) => strings.reduce((result, string, i) => result + string + (values[i] ?? ""), "");
 
@@ -36,3 +38,5 @@ export const getPriceRange = (product, quantity = 1) => {
 };
 
 export const getProductById = (id) => products.find((p) => p.id === parseInt(id));
+export const getAddressById = (id) => (S.appData.profile.addresses || []).find((p) => p.id === parseInt(id));
+export const isMobile = () => window.innerWidth < mobileMaxWidthPlus1;
