@@ -1,3 +1,4 @@
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { html } from "../utils/helpers.js";
 
 class QuantityPicker extends HTMLElement {
@@ -82,6 +83,18 @@ class QuantityPicker extends HTMLElement {
                     line-height: 1.5;
                     min-width: 30px;
                     -moz-appearance: textfield;
+                }
+
+                @media (max-width: ${mobileMaxWidthPlus1}px) {
+                    .quantity-input {
+                        max-width: 2rem;
+                    }
+                }
+
+                input[type="number"]::-webkit-outer-spin-button,
+                input[type="number"]::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
                 }
             </style>
             <div class="input-group input-group-sm">

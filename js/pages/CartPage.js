@@ -1,4 +1,5 @@
 import { showConfirmationModal, showToast } from "../components/Toast.js";
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { S } from "../state.js";
 import { html, getProductById, formatCurrency } from "../utils/helpers.js";
 import { saveUserData } from "../utils/storage.js";
@@ -130,6 +131,13 @@ export function renderCartPage(container) {
                 width: 1.25rem;
                 height: 1.25rem;
                 margin-top: 0;
+            }
+            @media (max-width: ${mobileMaxWidthPlus1}px) {
+                .cart-item {
+                    flex-direction: column;
+                    gap: 1rem;
+                    margin-bottom: 3rem !important;
+                }
             }
         </style>
         <h1 class="mb-4">Your Shopping Cart</h1>
