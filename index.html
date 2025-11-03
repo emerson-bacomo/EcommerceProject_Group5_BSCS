@@ -13,16 +13,25 @@
     </head>
     <body>
         <div id="app-shell">
-            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom w-100 px-3">
-                <div class="d-flex align-items-center w-100 px-4 justify-content-between">
-                    <span class="fw-bold me-4" href="#" data-page="home-view" style="cursor: pointer; font-size: 1.25rem">
-                        ShopSphere
-                    </span>
-
-                    <div class="flex-grow-1" id="nav-spacer"></div>
-
+            <nav class="navbar navbar-light bg-white border-bottom w-100 px-lg-4 px-0">
+                <div class="container-fluid justify-content-between align-items-center">
+                    <!-- Left side -->
                     <div class="d-flex align-items-center">
-                        <div class="search-container me-auto" id="main-search-container">
+                        <button class="btn p-0 border-0 bg-transparent d-lg-none me-3" id="mobile-menu-toggle" aria-label="Menu">
+                            <i class="fas fa-bars fs-5"></i>
+                        </button>
+                        <span class="fw-bold" data-page="home-view" style="cursor: pointer; font-size: 1.5rem"> Sneaky </span>
+                    </div>
+
+                    <!-- Right side -->
+                    <div class="d-flex align-items-center">
+                        <!-- Mobile search icon -->
+                        <button class="btn p-0 border-0 bg-transparent d-lg-none" id="mobile-search-btn">
+                            <i class="fas fa-search fs-5"></i>
+                        </button>
+
+                        <!-- Desktop search -->
+                        <div class="search-container d-none d-lg-block" id="main-search-container">
                             <form id="search-form">
                                 <div class="input-group">
                                     <input
@@ -40,12 +49,32 @@
                             </form>
                             <div id="search-results-dropdown" class="search-results-dropdown"></div>
                         </div>
-                        <a href="#" class="nav-link" id="nav-search-toggle"><i class="fas fa-search"></i></a>
-                    </div>
 
-                    <div id="nav-user-auth-links" class="d-flex align-items-center"></div>
+                        <!-- Desktop search icon -->
+                        <div class="d-none d-lg-block">
+                            <a href="#" class="nav-link" id="nav-search-toggle">
+                                <i class="fas fa-search fs-5"></i>
+                            </a>
+                        </div>
+
+                        <!-- Desktop user links -->
+                        <div id="nav-user-auth-links" class="d-none d-lg-flex align-items-center"></div>
+                    </div>
                 </div>
             </nav>
+
+            <!-- Mobile burger menu offcanvas -->
+            <div id="mobileMenu" class="mobile-menu">
+                <div class="mobile-menu-header d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <h5 class="fw-bold mb-0">Menu</h5>
+                    <button id="mobileMenuClose" class="btn p-0 border-0 bg-transparent">
+                        <i class="fas fa-times fs-5"></i>
+                    </button>
+                </div>
+                <ul class="d-flex flex-column gap-2 m-0 p-3" id="mobile-menu-links">
+                    <!-- dynamically filled -->
+                </ul>
+            </div>
 
             <main id="app-content" class="container py-5"></main>
         </div>

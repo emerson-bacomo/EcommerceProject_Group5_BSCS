@@ -3,6 +3,7 @@ import { S } from "./state.js";
 import { saveUserData, loadUserData, clearCurrentUser, getCurrentUser } from "./utils/storage.js";
 import { html } from "./utils/helpers.js";
 import { updateCartBadge } from "./pages/CartPage.js";
+import { addSearchToHistory, setupSearchEventListeners } from "./pages/SearchPage.js";
 
 export function setupAppListeners() {
     document.body.addEventListener("click", (e) => {
@@ -48,6 +49,7 @@ export function setupAppListeners() {
     const searchContainer = document.getElementById("main-search-container");
     const searchInput = document.getElementById("search-input");
     const searchToggle = document.getElementById("nav-search-toggle");
+    const searchDropdown = document.querySelector(".search-results-dropdown");
 
     document.getElementById("nav-search-toggle").addEventListener("click", (e) => {
         e.preventDefault();
@@ -58,16 +60,7 @@ export function setupAppListeners() {
         }
     });
 
-    const searchDropdown = document.getElementById("search-results-dropdown");
-    searchInput.addEventListener("focus", showSearchHistory);
-    searchInput.addEventListener("input", () => showAutocomplete(searchInput.value));
-    searchInput.addEventListener("blur", () => {
-        if (!searchInput.value) {
-            searchContainer.classList.remove("active");
-            // listen once for the transition to finish before showing the toggle again
-            searchContainer.addEventListener("transitionend", () => (searchToggle.style.display = "block"), { once: true });
-        }
-    });
+    setupSearchEventListeners(document);
 
     document.addEventListener("click", (e) => {
         if (!e.target.closest(".search-container")) searchDropdown.classList.remove("show");
@@ -90,24 +83,47 @@ export function setupAppListeners() {
             searchDropdown.classList.remove("show");
         }
     });
-    document.getElementById("search-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const query = searchInput.value.trim();
-        if (query) {
-            addSearchToHistory(query);
-            S.buyNowItem = null;
-            navigateTo("search-results-view", query);
-            searchDropdown.classList.remove("show");
-            searchInput.blur();
+
+    searchInput.addEventListener("blur", () => {
+        if (!searchInput.value) {
+            searchContainer.classList.remove("active");
+            // listen once for the transition to finish before showing the toggle again
+            searchContainer.addEventListener("transitionend", () => (searchToggle.style.display = "block"), { once: true });
         }
     });
+
+    const menu = document.getElementById("mobileMenu");
+    const openBtn = document.getElementById("mobile-menu-toggle");
+    const closeBtn = document.getElementById("mobileMenuClose");
+
+    openBtn.addEventListener("click", () => {
+        menu.classList.add("show");
+        document.body.classList.add("menu-open");
+    });
+
+    closeBtn.addEventListener("click", closeMenu);
+
+    document.addEventListener("click", (e) => {
+        if (!menu.contains(e.target) && !openBtn.contains(e.target)) {
+            closeMenu();
+        }
+    });
+
+    document.getElementById("mobile-search-btn").addEventListener("click", () => {
+        navigateTo("search-view");
+    });
+}
+
+export function closeMenu() {
+    document.getElementById("mobileMenu").classList.remove("show");
+    document.body.classList.remove("menu-open");
 }
 
 export function updateNavUI() {
     const container = document.getElementById("nav-user-auth-links");
     const loggedInNavLinksHTML = html`
         <a href="#" class="nav-link position-relative ms-3" id="nav-cart-link" data-page="cart-view" title="Cart">
-            <i class="fas fa-shopping-cart"></i>
+            <i class="fas fa-shopping-cart fa-lg"></i>
             <span
                 id="cart-badge"
                 class="position-absolute start-0 translate-middle badge rounded-pill bg-primary"
@@ -155,6 +171,39 @@ export function updateNavUI() {
     } else {
         container.innerHTML = loggedOutNavLinksHTML;
     }
+    updateMobileMenu();
+}
+
+function updateMobileMenu() {
+    const menuContainer = document.getElementById("mobile-menu-links");
+    if (!menuContainer) return;
+
+    const commonItemClasses = "list-group-item list-group-item-action py-3 px-4 fs-6";
+
+    if (S.currentUser) {
+        menuContainer.innerHTML = html`
+            <ul class="list-group list-group-flush">
+                <li class="${commonItemClasses}" data-page="home-view"><i class="fas fa-home me-2"></i> Home</li>
+                <li class="${commonItemClasses}" data-page="profile-view"><i class="fas fa-user me-2"></i> Profile</li>
+                <li class="${commonItemClasses}" data-page="orders-view"><i class="fas fa-box me-2"></i> My Orders</li>
+                <li class="${commonItemClasses}" data-page="address-management-view">
+                    <i class="fas fa-map-marker-alt me-2"></i> My Addresses
+                </li>
+                <li class="${commonItemClasses} text-danger fw-semibold" id="logout-mobile">
+                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                </li>
+            </ul>
+        `;
+
+        document.getElementById("logout-mobile").addEventListener("click", logout);
+    } else {
+        menuContainer.innerHTML = html`
+            <ul class="list-group list-group-flush">
+                <li class="${commonItemClasses}" data-page="login-view"><i class="fas fa-sign-in-alt me-2"></i> Login</li>
+                <li class="${commonItemClasses}" data-page="signup-view"><i class="fas fa-user-plus me-2"></i> Sign Up</li>
+            </ul>
+        `;
+    }
 }
 
 export function initApp(user) {
@@ -185,47 +234,4 @@ function logout() {
     S.appData = { profile: {}, cart: [], orders: [], searchHistory: [] };
     updateNavUI();
     navigateTo("login-view", null, { skipReturnTo: true });
-}
-
-function showSearchHistory() {
-    const searchDropdown = document.getElementById("search-results-dropdown");
-    if (!S.currentUser || (S.appData.searchHistory || []).length === 0)
-        searchDropdown.innerHTML = `<div class="p-3 text-muted text-center">No recent searches.</div>`;
-    else
-        searchDropdown.innerHTML = (S.appData.searchHistory || [])
-            .map(
-                (term) =>
-                    `<a href="#" class="history-item" data-term="${term}"><i class="fas fa-history me-3 text-muted"></i> ${term}</a>`
-            )
-            .join("");
-    searchDropdown.classList.add("show");
-}
-function showAutocomplete(query) {
-    const { products } = S;
-    const searchDropdown = document.getElementById("search-results-dropdown");
-    if (!query) {
-        showSearchHistory();
-        return;
-    }
-    const results = (products || []).filter((p) => p.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
-    if (results.length === 0) searchDropdown.innerHTML = `<div class="p-3 text-muted text-center">No products found.</div>`;
-    else
-        searchDropdown.innerHTML = results
-            .map(
-                (p) =>
-                    html`
-                        <a href="#" class="autocomplete-item" data-product-id="${p.id}"
-                            ><img src="${p.images[0]}" alt="${p.name}" /> <span>${p.name}</span></a
-                        >
-                    `
-            )
-            .join("");
-    searchDropdown.classList.add("show");
-}
-function addSearchToHistory(term) {
-    if (!term || !S.currentUser) return;
-    S.appData.searchHistory = (S.appData.searchHistory || []).filter((t) => t.toLowerCase() !== term.toLowerCase());
-    S.appData.searchHistory.unshift(term);
-    S.appData.searchHistory = S.appData.searchHistory.slice(0, 5);
-    saveUserData(S.currentUser, S.appData);
 }

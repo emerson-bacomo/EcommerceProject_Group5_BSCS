@@ -18,6 +18,7 @@ import { renderLoginPage } from "./pages/LoginPage.js";
 import { renderSignupPage } from "./pages/SignupPage.js";
 import { renderCancellationSuccessPage } from "./pages/CancellationSuccessPage.js";
 import { renderAddressDetailsPage } from "./pages/AddressDetailsPage.js";
+import { renderSearchPage } from "./pages/SearchPage.js";
 
 S.views = {
     "home-view": (container) => renderHomePage(container),
@@ -28,6 +29,7 @@ S.views = {
     "orders-view": (container) => renderOrdersPage(container),
     "order-detail-view": (container, id) => renderOrderDetailPage(container, id),
     "cancellation-success-view": (container, id) => renderCancellationSuccessPage(container, id),
+    "search-view": (container) => renderSearchPage(container),
     "search-results-view": (container, q) => renderSearchResultsPage(container, q),
     "address-management-view": (container) => renderAddressManagementPage(container),
     "address-details-view": (container) => renderAddressDetailsPage(container),

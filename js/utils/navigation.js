@@ -1,3 +1,4 @@
+import { closeMenu } from "../appEvents.js";
 import { navbar } from "../main.js";
 import { S } from "../state.js";
 import { isMobile } from "./helpers.js";
@@ -9,6 +10,8 @@ export function navigateTo(pageKey, params = null, options = {}) {
         currentCleanup();
         currentCleanup = null;
     }
+
+    closeMenu();
 
     const appShell = document.getElementById("app-shell");
     const contentArea = appShell.querySelector("#app-content");
