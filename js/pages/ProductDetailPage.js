@@ -302,7 +302,11 @@ export function renderProductDetailPage(container, params) {
                 display: flex;
                 gap: 8px;
                 z-index: 10;
+                background-color: rgba(0, 0, 0, 0.3);
+                padding: 0.5rem 1rem;
+                border-radius: 1rem;
             }
+
             .indicator {
                 width: 20px;
                 height: 5px;
@@ -323,8 +327,8 @@ export function renderProductDetailPage(container, params) {
             }
             .thumb-item {
                 cursor: pointer;
-                border: 2px solid transparent;
                 border-radius: var(--bs-border-radius);
+                border: 1px solid #ced4da;
                 padding: 2px;
                 transition: border-color 0.2s;
             }
@@ -336,7 +340,7 @@ export function renderProductDetailPage(container, params) {
                 border-radius: calc(var(--bs-border-radius) - 2px);
             }
             .thumb-item.active {
-                border-color: var(--bs-primary);
+                border: 2px solid var(--bs-primary);
             }
             .variation-selector .btn-check + .btn-outline-secondary {
                 border-color: #ced4da;
