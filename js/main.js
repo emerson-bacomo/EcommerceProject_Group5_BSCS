@@ -19,6 +19,7 @@ import { renderSignupPage } from "./pages/SignupPage.js";
 import { renderCancellationSuccessPage } from "./pages/CancellationSuccessPage.js";
 import { renderAddressDetailsPage } from "./pages/AddressDetailsPage.js";
 import { renderSearchPage } from "./pages/SearchPage.js";
+import { renderSettingsPage } from "./pages/SettingsPage.js";
 
 S.views = {
     "home-view": (container) => renderHomePage(container),
@@ -35,6 +36,7 @@ S.views = {
     "address-details-view": (container) => renderAddressDetailsPage(container),
     "login-view": (container) => renderLoginPage(container),
     "signup-view": (container) => renderSignupPage(container),
+    "settings-view": (container) => renderSettingsPage(container),
 };
 
 export let navbar;

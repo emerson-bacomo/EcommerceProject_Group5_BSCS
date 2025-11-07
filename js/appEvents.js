@@ -133,12 +133,16 @@ export function updateNavUI() {
             >
                 <i class="fas fa-user fa-lg" id="nav-profile-icon"></i>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile-dropdown">
-                <li><a class="dropdown-item" href="#" data-page="profile-view">Profile</a></li>
-                <li><a class="dropdown-item" href="#" data-page="orders-view">My Orders</a></li>
-                <li><a class="dropdown-item" href="#" data-page="address-management-view">My Addresses</a></li>
+            <ul class="dropdown-menu dropdown-menu-end profile-dropdown mt-2" aria-labelledby="profile-dropdown">
+                <li class="dropdown-item" href="#" data-page="home-view"><i class="fas fa-home me-2"></i> Home</li>
+                <li class="dropdown-item" href="#" data-page="profile-view"><i class="fas fa-user me-2"></i> Profile</li>
+                <li class="dropdown-item" href="#" data-page="orders-view"><i class="fas fa-box me-2"></i> My Orders</li>
+                <li class="dropdown-item" href="#" data-page="address-management-view">
+                    <i class="fas fa-map-marker-alt me-2"></i> My Addresses
+                </li>
+                <li class="dropdown-item" href="#" data-page="settings-view"><i class="fas fa-cog me-2"></i> Settings</li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" id="logout-button">Logout</a></li>
+                <li class="dropdown-item" id="logout-button"><i class="fas fa-sign-out-alt me-2"></i> Logout</li>
             </ul>
         </div>
     `;
@@ -178,6 +182,7 @@ function updateMobileMenu() {
                 <li class="${commonItemClasses}" data-page="address-management-view">
                     <i class="fas fa-map-marker-alt me-2"></i> My Addresses
                 </li>
+                <li class="${commonItemClasses}" data-page="settings-view"><i class="fas fa-cog me-2"></i> Settings</li>
                 <li class="${commonItemClasses} text-danger fw-semibold" id="logout-mobile">
                     <i class="fas fa-sign-out-alt me-2"></i> Logout
                 </li>

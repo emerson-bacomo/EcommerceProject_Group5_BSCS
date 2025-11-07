@@ -160,3 +160,13 @@ body.menu-open::before {
     line-height: 1.2; /* Adjust as needed for better spacing */
     max-height: 2.4em; /* Should be line-height * 2 lines (e.g., 1.2 * 2 = 2.4) */
 }
+
+.profile-dropdown .fas {
+    width: 1.25em;
+    text-align: center;
+}
+
+#mobile-menu-links .fas {
+    width: 1.25em;
+    text-align: center;
+}

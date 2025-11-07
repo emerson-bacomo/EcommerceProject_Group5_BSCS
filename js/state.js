@@ -26,6 +26,7 @@ export const S = {
         "order-detail-view",
         "address-management-view",
         "cancellation-success-view",
+        "settings-view",
     ],
     views: {},
 };
