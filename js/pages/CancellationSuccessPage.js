@@ -10,7 +10,7 @@ export function renderCancellationSuccessPage(container, orderId) {
     if (!order) {
         container.innerHTML = html`
             <p class="text-center">Order not found.</p>
-            <a href="#" data-page="orders-view">&larr; Back to My Orders</a>
+            <a href="#" data-page="orders-view"><i class="fa-solid fa-arrow-left me-2"></i>Back to My Orders</a>
         `;
         return;
     }
@@ -60,7 +60,7 @@ export function renderCancellationSuccessPage(container, orderId) {
                     </button>
                 </div>
                 <div class="mt-4">
-                    <a href="#" data-page="orders-view">&larr; Back to My Orders</a>
+                    <a href="#" data-page="orders-view"><i class="fa-solid fa-arrow-left me-2"></i>Back to My Orders</a>
                 </div>
             </div>
         </div>

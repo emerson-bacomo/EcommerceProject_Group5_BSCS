@@ -79,7 +79,6 @@ class QuantityPicker extends HTMLElement {
                 }
                 .quantity-input {
                     width: 100%;
-                    max-width: 80px;
                     text-align: center;
                     height: 100%;
                     border: none;
@@ -91,6 +90,9 @@ class QuantityPicker extends HTMLElement {
                 }
 
                 @media (max-width: ${mobileMaxWidthPlus1}px) {
+                    .input-group {
+                        max-width: 100px;
+                    }
                 }
 
                 input[type="number"]::-webkit-outer-spin-button,

@@ -39,7 +39,9 @@ export function renderLoginPage(container) {
                     Don't have an account? <a href="#" data-page="signup-view">Sign Up</a>
                 </p>
                 <p class="text-center text-muted mt-2 mb-0">
-                    <a href="#" data-page="home-view">&larr; Back to Shop</a>
+                    <a href="#" data-page="home-view" class="text-decoration-none"
+                        ><i class="fa-solid fa-arrow-left me-2"></i>Back to Shop</a
+                    >
                 </p>
             </div>
         </div>

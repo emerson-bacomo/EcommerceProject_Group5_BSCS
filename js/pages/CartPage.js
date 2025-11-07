@@ -92,10 +92,10 @@ export function renderCartPage(container) {
                             <img
                                 src="${displayImg}"
                                 alt="${product.name}"
-                                class="cart-item-img-link"
+                                class="cart-item-img-link img-thumbnail"
                                 data-product-id="${product.id}"
                                 style="cursor: pointer;"
-                                onerror="this.onerror=null;this.src='${product.images[0]}';"
+                                onerror="this.onerror=null;this.src='https://placehold.co/600x600/E2E8F0/4A5568?text=Image';"
                             />
                         </div>
 
@@ -163,12 +163,6 @@ export function renderCartPage(container) {
 
     container.innerHTML = html`
         <style>
-            .cart-item img {
-                width: 80px;
-                height: 80px;
-                object-fit: cover;
-                border-radius: var(--bs-border-radius);
-            }
             .cart-variation-select {
                 width: 120px;
                 overflow: hidden;

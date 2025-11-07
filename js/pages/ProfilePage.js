@@ -59,6 +59,7 @@ export function renderProfilePage(container) {
                 <div class="card mb-4">
                     <div class="card-body">
                         <h4 class="card-title">Personal Information</h4>
+                        <label class="my-2 mb-3">Username: @${currentUser.username}</label>
                         <form id="profile-info-form" novalidate>
                             <div class="mb-3">
                                 <label class="form-label">First Name</label>

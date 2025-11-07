@@ -48,9 +48,30 @@ export function classNames(...args) {
         .join(" "); // join by space
 }
 
-export function styleString(styles) {
-    return Object.entries(styles)
-        .filter(([, value]) => value != null && value !== false)
+export function styleString(...args) {
+    const styles = {};
+
+    for (const arg of args.flat(Infinity)) {
+        if (!arg) continue;
+
+        if (typeof arg === "string") {
+            // Parse simple "key: value" strings
+            const [key, value] = arg.split(":").map((s) => s.trim());
+            if (key && value) styles[key] = value;
+        } else if (typeof arg === "object") {
+            // Merge style objects
+            for (const [key, value] of Object.entries(arg)) {
+                if (value != null && value !== false) {
+                    styles[key] = value;
+                }
+            }
+        }
+    }
+
+    // Convert final object to CSS string
+    const res = Object.entries(styles)
         .map(([key, value]) => `${key.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}:${value}`)
         .join("; ");
+
+    return res;
 }

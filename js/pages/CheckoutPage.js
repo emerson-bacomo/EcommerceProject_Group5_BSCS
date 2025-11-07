@@ -1,7 +1,7 @@
 import { showToast } from "../components/Toast.js";
 import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { S } from "../state.js";
-import { getProductById, formatCurrency, html } from "../utils/helpers.js";
+import { getProductById, formatCurrency, html, styleString, isMobile, classNames } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
 
@@ -67,9 +67,15 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
         <style>
             @media (min-width: ${mobileMaxWidthPlus1}px) {
                 .cart-item-list {
+                    <!-- Limit height so that it would scroll in place on desktop -->
                     max-height: 40vh;
                     overflow-y: auto;
                     overflow-x: hidden;
+                }
+            }
+            @media (max-width: ${mobileMaxWidthPlus1}px) {
+                .card-body {
+                    padding: 0.75rem;
                 }
             }
         </style>
@@ -77,11 +83,10 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
         <h1 class="mb-4">Checkout</h1>
         <div class="row g-5">
             <div class="col-md-7">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>Shipping Address</h4>
                     <a href="#" data-page="address-management-view">Edit</a>
                 </div>
-                <hr />
                 ${(S.appData.profile.addresses || []).length > 0
                     ? addressOptions
                     : html`
@@ -91,8 +96,7 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
                           </div>
                       `}
 
-                <h4 class="mt-4">Payment Method</h4>
-                <hr />
+                <h4 class="mt-4 mb-3">Payment Method</h4>
                 <div class="card card-body">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="paymentMethod" id="payment-cod" value="COD" checked />
@@ -118,19 +122,20 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
                                         item.product.variations?.color?.[item.color]?.image || item.product.images[0];
 
                                     return html`
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <div class="d-flex gap-3">
+                                        <li
+                                            class="list-group-item d-flex justify-content-between gap-2"
+                                            style="${styleString("border: none", isMobile() && "padding: 0.5rem 0")}"
+                                        >
+                                            <div class="${classNames("d-flex w-100", isMobile() ? "gap-2" : "gap-3")}">
                                                 <img
                                                     src="${displayImg}"
                                                     alt="${item.product.name}"
-                                                    style="cursor: pointer; width: 80px; height: 80px;"
-                                                    onerror="this.onerror=null;this.src='${item.product.images[0]}';"
+                                                    class="img-thumbnail"
+                                                    onerror="this.onerror=null;this.src='https://placehold.co/80x80/E2E8F0/4A5568?text=N/A';"
                                                 />
                                                 <div>
-                                                    ${item.product.name} (x${item.quantity})
-                                                    ${variationText
-                                                        ? `<br><small class="text-muted">${variationText}</small>`
-                                                        : ""}
+                                                    <span class="text-ellipsis-2">${item.product.name} (x${item.quantity})</span>
+                                                    ${variationText ? `<small class="text-muted">${variationText}</small>` : ""}
                                                 </div>
                                             </div>
                                             <strong>${formatCurrency(item.price * item.quantity)}</strong>

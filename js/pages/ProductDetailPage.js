@@ -393,34 +393,48 @@ export function renderProductDetailPage(container, params) {
                         ${allImages
                             .map(
                                 (imgUrl) =>
-                                    `<div class="image-slide"><img src="${imgUrl}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/600x600/E2E8F0/4A5568?text=Image';"></div>`
+                                    html`
+                                        <div class="image-slide">
+                                            <img
+                                                src="${imgUrl}"
+                                                alt="${product.name}"
+                                                onerror="this.onerror=null;this.src='https://placehold.co/600x600/E2E8F0/4A5568?text=Image';"
+                                            />
+                                        </div>
+                                    `
                             )
                             .join("")}
                     </div>
                     ${allImages.length > 1
-                        ? `
-                        <button class="image-viewer-arrow prev"><i class="fas fa-chevron-left"></i></button>
-                        <button class="image-viewer-arrow next"><i class="fas fa-chevron-right"></i></button>
-                        <div class="image-indicators">${allImages
-                            .map((_, i) => `<div class="indicator ${i === 0 ? "active" : ""}" data-index="${i}"></div>`)
-                            .join("")}</div>
-                    `
+                        ? html`
+                              <button class="image-viewer-arrow prev"><i class="fas fa-chevron-left"></i></button>
+                              <button class="image-viewer-arrow next"><i class="fas fa-chevron-right"></i></button>
+                              <div class="image-indicators">
+                                  ${allImages
+                                      .map((_, i) => `<div class="indicator ${i === 0 ? "active" : ""}" data-index="${i}"></div>`)
+                                      .join("")}
+                              </div>
+                          `
                         : ""}
                 </div>
                 ${colors.length > 0 && !(colors.length === 1 && colors[0] === "Default")
-                    ? `
-                    <div class="variation-thumbnails mt-3" id="variation-thumbs">
-                        ${Object.entries(product.variations?.color || {})
-                            .map(
-                                ([colorName, colorData]) => `
-                            <div class="thumb-item" data-color="${colorName}" title="${colorName}">
-                                <img src="${
-                                    colorData.image || product.images[0]
-                                }" alt="${colorName}" onerror="this.onerror=null;this.src='${product.images[0]}';">
-                            </div>`
-                            )
-                            .join("")}
-                    </div>`
+                    ? html`
+                          <div class="variation-thumbnails mt-3" id="variation-thumbs">
+                              ${Object.entries(product.variations?.color || {})
+                                  .map(
+                                      ([colorName, colorData]) => html`
+                                          <div class="thumb-item" data-color="${colorName}" title="${colorName}">
+                                              <img
+                                                  src="${colorData.image || product.images[0]}"
+                                                  alt="${colorName}"
+                                                  onerror="this.onerror=null;this.src='${product.images[0]}';"
+                                              />
+                                          </div>
+                                      `
+                                  )
+                                  .join("")}
+                          </div>
+                      `
                     : ""}
             </div>
             <div class="col-lg-6">
@@ -448,20 +462,21 @@ export function renderProductDetailPage(container, params) {
                       `
                     : ""}
                 ${sortedSizes.length > 0 && !(sortedSizes.length === 1 && sortedSizes[0] === "Standard")
-                    ? `
-                    <div class="mb-4 variation-selector" id="size-selector">
-                        <label class="form-label d-block">Size:</label>
-                        <div class="variation-div" role="group" aria-label="Size options">
-                            ${sortedSizes
-                                .map(
-                                    (size, index) => `
+                    ? html`
+                          <div class="mb-4 variation-selector" id="size-selector">
+                              <label class="form-label d-block">Size:</label>
+                              <div class="variation-div" role="group" aria-label="Size options">
+                                  ${sortedSizes
+                                      .map(
+                                          (size, index) => `
                                 <input type="checkbox" class="btn-check" name="productSize" id="size-${index}" value="${size}" autocomplete="off">
                                 <label class="btn btn-outline-secondary" for="size-${index}">${size}</label>
                             `
-                                )
-                                .join("")}
-                        </div>
-                    </div>`
+                                      )
+                                      .join("")}
+                              </div>
+                          </div>
+                      `
                     : ""}
                 <div class="alert alert-danger mt-3" id="variation-error" role="alert">
                     Please select available options for Color and Size.

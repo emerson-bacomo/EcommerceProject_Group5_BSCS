@@ -1,6 +1,6 @@
 import { showConfirmationModal, showToast } from "../components/Toast.js";
 import { S } from "../state.js";
-import { formatCurrency, getProductById, html } from "../utils/helpers.js";
+import { classNames, formatCurrency, getProductById, html, isMobile } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
 
@@ -9,7 +9,7 @@ export function renderOrderDetailPage(container, orderId) {
     if (!order) {
         container.innerHTML = html`
             <p class="text-center">Order not found.</p>
-            <a href="#" data-page="orders-view">&larr; Back to My Orders</a>
+            <a href="#" data-page="orders-view"><i class="fa-solid fa-arrow-left me-2"></i>Back to My Orders</a>
         `;
         return;
     }
@@ -27,17 +27,17 @@ export function renderOrderDetailPage(container, orderId) {
 
             return html`
                 <li class="list-group-item d-flex gap-3 justify-content-between align-items-start py-3">
-                    <img
-                        src="${displayImage}"
-                        class="order-item-img"
-                        width="80"
-                        height="80"
-                        onerror="this.onerror=null;this.src='https://placehold.co/80x80/E2E8F0/4A5568?text=N/A';"
-                    />
-                    <div class="d-flex flex-column gap-1 align-items-start">
-                        <strong class="text-ellipsis-2">${productName}</strong>
-                        ${variationText ? `<small class="text-muted">${variationText}</small>` : ""}
-                        <small class="text-muted">${formatCurrency(item.price)} x ${item.quantity}</small>
+                    <div class="d-flex gap-3">
+                        <img
+                            src="${displayImage}"
+                            class="img-thumbnail"
+                            onerror="this.onerror=null;this.src='https://placehold.co/80x80/E2E8F0/4A5568?text=N/A';"
+                        />
+                        <div class="d-flex flex-column gap-1 align-items-start">
+                            <strong class="text-ellipsis-2">${productName}</strong>
+                            ${variationText ? `<small class="text-muted">${variationText}</small>` : ""}
+                            <small class="text-muted">${formatCurrency(item.price)} x ${item.quantity}</small>
+                        </div>
                     </div>
                     <strong>${formatCurrency(item.price * item.quantity)}</strong>
                 </li>
@@ -48,14 +48,16 @@ export function renderOrderDetailPage(container, orderId) {
     const itemTotal = order.items.reduce((sum, it) => sum + it.price * it.quantity, 0);
 
     container.innerHTML = html`
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Order Details</h1>
-            <a href="#" data-page="orders-view" class="btn btn-outline-secondary">&larr; Back to My Orders</a>
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center" data-page="orders-view">
+                <i class="fas fa-arrow-left fs-5"></i>
+            </button>
+            <h1 class="mb-0">Order Details</h1>
         </div>
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between">
+                    <div class="${classNames("card-header d-flex justify-content-between", isMobile() && "flex-column")}">
                         <span><strong>Order ID:</strong> ${order.id}</span
                         ><span><strong>Placed on:</strong> ${new Date(order.date).toLocaleString()}</span>
                     </div>

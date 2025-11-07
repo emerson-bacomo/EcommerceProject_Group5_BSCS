@@ -77,9 +77,7 @@ function renderOrdersByStatus(status, container) {
                         <div class="d-flex align-items-center">
                             <img
                                 src="${displayImage}"
-                                class="order-item-img me-3"
-                                width="80"
-                                height="80"
+                                class="img-thumbnail me-3"
                                 onerror="this.onerror=null;this.src='https://placehold.co/80x80/E2E8F0/4A5568?text=N/A';"
                             />
                             <div>
