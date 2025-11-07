@@ -207,7 +207,7 @@ export function renderHomePage(container) {
                                     <span class="visually-hidden">Next</span>
                                 </button>
                                 <div class="banner-carousel-controls">
-                                    <span class="slide-number">01 / ${String(bannerProducts.length).padStart(2, "0")}</span>
+                                    <span class="slide-number">1 / ${bannerProducts.length}</span>
                                     <div class="slide-progress-wrapper">
                                         <div class="slide-progress" id="banner-progress-bar"></div>
                                     </div>
@@ -258,14 +258,18 @@ export function renderHomePage(container) {
         const totalSlides = bannerProducts.length;
         const duration = 5000;
 
+        let slideTimer;
+        let slideStartTime;
+
         // eslint-disable-next-line no-undef
         const bannerCarousel = new bootstrap.Carousel(bannerCarouselEl, {
-            interval: duration,
-            ride: "carousel",
+            interval: false,
+            ride: false,
             pause: false,
         });
 
         const startProgress = () => {
+            slideStartTime = Date.now();
             progressEl.style.transition = "none";
             progressEl.style.width = "0%";
 
@@ -273,41 +277,87 @@ export function renderHomePage(container) {
                 progressEl.style.transition = `width ${duration}ms linear`;
                 progressEl.style.width = "100%";
             });
+
+            clearTimeout(slideTimer);
+            slideTimer = setTimeout(() => {
+                bannerCarousel.next();
+            }, duration);
         };
 
         const pauseProgress = () => {
-            const computedWidth = (parseFloat(getComputedStyle(progressEl).width) / progressEl.parentElement.offsetWidth) * 100;
+            clearTimeout(slideTimer);
+            const timeElapsed = Date.now() - slideStartTime;
+            const percentElapsed = (timeElapsed / duration) * 100;
+            const timeRemaining = duration - timeElapsed;
+
+            bannerCarouselEl.dataset.timeRemaining = Math.max(0, timeRemaining);
+
             progressEl.style.transition = "none";
-            progressEl.style.width = `${computedWidth}%`;
+            progressEl.style.width = `${percentElapsed}%`;
         };
 
-        // Initial start
-        startProgress();
-        slideNumberEl.textContent = `01 / ${String(totalSlides).padStart(2, "0")}`;
+        const resumeProgress = () => {
+            let timeRemaining = parseFloat(bannerCarouselEl.dataset.timeRemaining);
 
-        // On slide change, reset progress and update slide number
+            if (isNaN(timeRemaining) || timeRemaining <= 0) {
+                startProgress();
+                return;
+            }
+
+            slideStartTime = Date.now() - (duration - timeRemaining);
+
+            requestAnimationFrame(() => {
+                progressEl.style.transition = `width ${timeRemaining}ms linear`;
+                progressEl.style.width = "100%";
+            });
+
+            clearTimeout(slideTimer);
+            slideTimer = setTimeout(() => {
+                bannerCarousel.next();
+            }, timeRemaining);
+        };
+
+        startProgress(); // Initial start
+        slideNumberEl.textContent = `1 / ${totalSlides}`;
+
         bannerCarouselEl.addEventListener("slide.bs.carousel", (event) => {
-            slideNumberEl.textContent = `${String(event.to + 1).padStart(2, "0")} / ${String(totalSlides).padStart(2, "0")}`;
+            slideNumberEl.textContent = `${event.to + 1} / ${totalSlides}`;
             startProgress();
         });
 
-        // Pause on interaction
         ["mousedown", "touchstart"].forEach((evt) =>
             bannerCarouselEl.addEventListener(evt, () => {
-                bannerCarousel.pause();
                 pauseProgress();
                 bannerCarouselEl.style.cursor = "grabbing";
             })
         );
 
-        // Resume on release
         ["mouseup", "touchend", "mouseleave"].forEach((evt) =>
             bannerCarouselEl.addEventListener(evt, () => {
-                bannerCarousel.cycle();
-                startProgress(); // reset progress on resume since that's what bootstrap's .cycle does
+                if (document.hidden === false && document.hasFocus()) {
+                    resumeProgress();
+                }
                 bannerCarouselEl.style.cursor = "default";
             })
         );
+
+        const handlePagePause = () => pauseProgress();
+        const handlePageResume = () => document.hidden === false && document.hasFocus() && resumeProgress();
+        const visibilityHandler = () => (document.hidden ? handlePagePause() : handlePageResume());
+
+        document.addEventListener("visibilitychange", visibilityHandler);
+        window.addEventListener("blur", handlePagePause);
+        window.addEventListener("focus", handlePageResume);
+
+        cleanUp.push(() => {
+            clearTimeout(slideTimer);
+
+            document.removeEventListener("visibilitychange", visibilityHandler);
+            window.removeEventListener("blur", handlePagePause);
+            window.removeEventListener("focus", handlePageResume);
+
+            bannerCarousel.dispose();
+        });
     }
 
     setupCarouselListeners();
