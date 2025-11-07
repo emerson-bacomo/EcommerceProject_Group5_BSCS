@@ -26,20 +26,18 @@ export function renderOrderDetailPage(container, orderId) {
             }${item.size && item.size !== "Standard" ? item.size : ""}`;
 
             return html`
-                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <div class="d-flex align-items-center">
-                        <img
-                            src="${displayImage}"
-                            class="order-item-img me-3"
-                            width="80"
-                            height="80"
-                            onerror="this.onerror=null;this.src='https://placehold.co/80x80/E2E8F0/4A5568?text=N/A';"
-                        />
-                        <div>
-                            <strong>${productName}</strong>
-                            ${variationText ? `<br><small class="text-muted">${variationText}</small>` : ""}
-                            <br /><small class="text-muted">${formatCurrency(item.price)} x ${item.quantity}</small>
-                        </div>
+                <li class="list-group-item d-flex gap-3 justify-content-between align-items-start py-3">
+                    <img
+                        src="${displayImage}"
+                        class="order-item-img"
+                        width="80"
+                        height="80"
+                        onerror="this.onerror=null;this.src='https://placehold.co/80x80/E2E8F0/4A5568?text=N/A';"
+                    />
+                    <div class="d-flex flex-column gap-1 align-items-start">
+                        <strong class="text-ellipsis-2">${productName}</strong>
+                        ${variationText ? `<small class="text-muted">${variationText}</small>` : ""}
+                        <small class="text-muted">${formatCurrency(item.price)} x ${item.quantity}</small>
                     </div>
                     <strong>${formatCurrency(item.price * item.quantity)}</strong>
                 </li>

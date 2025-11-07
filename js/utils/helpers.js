@@ -40,3 +40,17 @@ export const getPriceRange = (product, quantity = 1) => {
 export const getProductById = (id) => products.find((p) => p.id === parseInt(id));
 export const getAddressById = (id) => (S.appData.profile.addresses || []).find((p) => p.id === parseInt(id));
 export const isMobile = () => window.innerWidth < mobileMaxWidthPlus1;
+
+export function classNames(...args) {
+    return args
+        .flat(Infinity) // allow nested arrays
+        .filter(Boolean) // remove falsy (false, null, undefined, 0, "")
+        .join(" "); // join by space
+}
+
+export function styleString(styles) {
+    return Object.entries(styles)
+        .filter(([, value]) => value != null && value !== false)
+        .map(([key, value]) => `${key.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}:${value}`)
+        .join("; ");
+}

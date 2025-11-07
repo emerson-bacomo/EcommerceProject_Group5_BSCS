@@ -1,7 +1,7 @@
 import { showConfirmationModal, showToast } from "../components/Toast.js";
 import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { S } from "../state.js";
-import { html, getProductById, formatCurrency } from "../utils/helpers.js";
+import { html, getProductById, formatCurrency, classNames, isMobile } from "../utils/helpers.js";
 import { saveUserData } from "../utils/storage.js";
 
 export function renderCartPage(container) {
@@ -55,7 +55,11 @@ export function renderCartPage(container) {
                     </select>
                 `;
             } else if (item.color !== "Default")
-                colorSelectHTML = html`<span class="badge bg-light text-dark">${item.color}</span>`;
+                colorSelectHTML = html`<span
+                    class="cart-variation-select d-flex align-items-center justify-content-center bg-light text-dark"
+                    style="font-size: 14px; padding: 1rem; border-radius: 5px; height: 2rem;"
+                    >${item.color}</span
+                >`;
 
             let sizeSelectHTML = "";
             if (hasSizeVariations) {
@@ -68,48 +72,89 @@ export function renderCartPage(container) {
                         .join("")}
                 </select>`;
             } else if (item.size !== "Standard")
-                sizeSelectHTML = html`<span class="badge bg-light text-dark">${item.size}</span>`;
+                sizeSelectHTML = html`<span
+                    class="cart-variation-select d-flex align-items-center justify-content-center bg-light text-dark"
+                    style="font-size: 14px; padding: 1rem; border-radius: 5px; height: 2rem;"
+                    >${item.size}</span
+                >`;
 
             const displayImg = product.variations?.color?.[item.color]?.image || product.images[0];
             return html`
-                <div class="d-flex justify-content-between align-items-center mb-4 cart-item" data-cart-key="${itemIdentifier}">
-                    <div class="d-flex align-items-center flex-grow-1">
-                        <input
-                            type="checkbox"
-                            class="form-check-input cart-item-checkbox me-3"
-                            data-cart-key="${itemIdentifier}"
-                            ${item.selected ? "checked" : ""}
-                        />
-                        <img
-                            src="${displayImg}"
-                            alt="${product.name}"
-                            class="me-3 cart-item-img-link"
-                            data-product-id="${product.id}"
-                            style="cursor: pointer;"
-                            onerror="this.onerror=null;this.src='${product.images[0]}';"
-                        />
-                        <div>
-                            <h6 class="mb-0 cart-item-name-link" data-product-id="${product.id}" style="cursor: pointer;">
-                                ${product.name}
-                            </h6>
-                            <div class="d-flex gap-2 mt-1">${colorSelectHTML}${sizeSelectHTML}</div>
-                            <small class="text-muted mt-1 d-block">${formatCurrency(item.price)}</small>
+                <div class="d-flex justify-content-between align-items-center cart-item " data-cart-key="${itemIdentifier}">
+                    <div class="d-flex align-items-start w-100">
+                        <div class="d-flex align-items-center">
+                            <input
+                                type="checkbox"
+                                class="form-check-input cart-item-checkbox"
+                                data-cart-key="${itemIdentifier}"
+                                ${item.selected ? "checked" : ""}
+                            />
+                            <img
+                                src="${displayImg}"
+                                alt="${product.name}"
+                                class="cart-item-img-link"
+                                data-product-id="${product.id}"
+                                style="cursor: pointer;"
+                                onerror="this.onerror=null;this.src='${product.images[0]}';"
+                            />
                         </div>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <quantity-picker
-                            class="me-3 cart-quantity-picker"
-                            value="${item.quantity}"
-                            data-cart-key="${itemIdentifier}"
-                        ></quantity-picker>
-                        <strong class="me-3" style="min-width: 120px; text-align: right;">${formatCurrency(itemTotal)}</strong>
-                        <button
-                            class="btn btn-sm btn-outline-danger remove-item-btn"
-                            data-cart-key="${itemIdentifier}"
-                            aria-label="Remove item"
+
+                        <div
+                            class="${classNames(
+                                "d-flex align-items-center flex-column flex-sm-row justify-content-between w-100",
+                                isMobile() && "gap-3"
+                            )}"
                         >
-                            &times;
-                        </button>
+                            <div
+                                class="${classNames(
+                                    "d-flex flex-column justify-content-start flex-grow-1",
+                                    isMobile() ? "gap-3" : "gap-2"
+                                )}"
+                            >
+                                <h6
+                                    class="mb-0 cart-item-name-link text-ellipsis"
+                                    data-product-id="${product.id}"
+                                    style="cursor: pointer;"
+                                    title="${product.name}"
+                                >
+                                    ${product.name}
+                                </h6>
+
+                                <div class="d-flex align-items-start gap-2" style="height: fit-content">
+                                    <div class="d-flex gap-2 flex-column flex-sm-row flex-grow-1">
+                                        ${colorSelectHTML}${sizeSelectHTML}
+                                    </div>
+
+                                    <quantity-picker
+                                        class="cart-quantity-picker"
+                                        value="${item.quantity}"
+                                        data-cart-key="${itemIdentifier}"
+                                    ></quantity-picker>
+                                </div>
+
+                                <small class="text-muted d-none d-lg-block">${formatCurrency(item.price)}</small>
+                            </div>
+
+                            <div
+                                class="${classNames("d-flex align-items-center", isMobile() && "justify-content-between w-100")}"
+                            >
+                                <strong class="me-3" style="min-width: ${isMobile() ? "0" : "150"}px; text-align: right;">
+                                    ${formatCurrency(itemTotal)}
+                                </strong>
+
+                                <button
+                                    class="${classNames(
+                                        "btn btn-sm btn-outline-danger remove-item-btn",
+                                        isMobile() && "ms-auto"
+                                    )}"
+                                    style="width: 31px; height: 31px;"
+                                    data-cart-key="${itemIdentifier}"
+                                    aria-label="Remove item"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -126,17 +171,37 @@ export function renderCartPage(container) {
             }
             .cart-variation-select {
                 width: 120px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                padding-right: 30px;
             }
             .cart-item-checkbox {
                 width: 1.25rem;
                 height: 1.25rem;
                 margin-top: 0;
             }
+            .cart-item-checkbox,
+            .cart-item-img-link {
+                margin-right: 1rem;
+            }
+
             @media (max-width: ${mobileMaxWidthPlus1}px) {
                 .cart-item {
                     flex-direction: column;
                     gap: 1rem;
                     margin-bottom: 3rem !important;
+                }
+                .card-body {
+                    padding-left: 0.5rem;
+                    padding-right: 0.5rem;
+                }
+                .cart-item-checkbox,
+                .cart-item-img-link {
+                    margin-right: 0.5rem;
+                }
+                .cart-variation-select {
+                    width: 90px;
                 }
             }
         </style>
@@ -155,7 +220,7 @@ export function renderCartPage(container) {
                     </label>
                 </div>
             </div>
-            <div class="card-body">${cartItemsHTML}</div>
+            <div class="card-body d-flex flex-column gap-4">${cartItemsHTML}</div>
             <div class="card-footer bg-white p-3">
                 <div class="d-flex justify-content-end align-items-center">
                     <h5 class="me-3 mb-0">Subtotal (Selected):</h5>

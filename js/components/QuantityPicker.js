@@ -18,12 +18,11 @@ class QuantityPicker extends HTMLElement {
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === "value" && oldValue !== newValue) {
             const newParsedValue = parseInt(newValue, 10);
-            if (!isNaN(newParsedValue) && newParsedValue >= 1) {
-                this._value = newParsedValue;
-                this.updateInput();
-            } else if (this.shadowRoot.querySelector("input")) {
-                this.updateInput();
+            if (!isNaN(newParsedValue)) {
+                const clampedValue = Math.min(Math.max(newParsedValue, 1), 99);
+                this._value = clampedValue;
             }
+            this.updateInput();
         }
     }
     get value() {
@@ -31,17 +30,19 @@ class QuantityPicker extends HTMLElement {
     }
     set value(newValue) {
         const newParsedValue = parseInt(newValue, 10);
-        if (!isNaN(newParsedValue) && newParsedValue >= 1) {
-            if (this._value !== newParsedValue) {
-                this._value = newParsedValue;
-                this.setAttribute("value", this._value);
+        if (!isNaN(newParsedValue)) {
+            const clampedValue = Math.min(Math.max(newParsedValue, 1), 99);
+            if (this._value !== clampedValue) {
+                this._value = clampedValue;
+                this.setAttribute("value", clampedValue);
                 this.updateInput();
-                this.dispatchEvent(new CustomEvent("change", { detail: { value: this._value } }));
+                this.dispatchEvent(new CustomEvent("change", { detail: { value: clampedValue } }));
             }
         } else {
             this.updateInput();
         }
     }
+
     updateInput() {
         const input = this.shadowRoot.querySelector(".quantity-input");
         if (input) input.value = this._value;
@@ -52,6 +53,7 @@ class QuantityPicker extends HTMLElement {
                 .input-group {
                     display: flex;
                     width: 100%;
+                    height: 30px;
                     border: 1px solid #dee2e6;
                     border-radius: var(--bs-border-radius, 0.375rem);
                     overflow: hidden;
@@ -60,12 +62,13 @@ class QuantityPicker extends HTMLElement {
                 .input-group button {
                     border: none;
                     background-color: #f8f9fa;
-                    padding: 0.375rem 0.75rem;
                     cursor: pointer;
+                    height: 100%;
                     font-size: 1rem;
-                    line-height: 1.5;
                     flex-shrink: 0;
                     border-right: 1px solid #dee2e6;
+                    padding: 0 0.5rem;
+                    line-height: 30px;
                 }
                 .input-group button:last-child {
                     border-right: none;
@@ -75,20 +78,19 @@ class QuantityPicker extends HTMLElement {
                     background-color: #e9ecef;
                 }
                 .quantity-input {
-                    flex-grow: 1;
+                    width: 100%;
+                    max-width: 80px;
                     text-align: center;
+                    height: 100%;
                     border: none;
-                    padding: 0.375rem 0.5rem;
-                    font-size: 1rem;
-                    line-height: 1.5;
-                    min-width: 30px;
+                    font-size: 14px;
+                    padding: 0;
+                    line-height: 30px;
+                    min-width: 0px;
                     -moz-appearance: textfield;
                 }
 
                 @media (max-width: ${mobileMaxWidthPlus1}px) {
-                    .quantity-input {
-                        max-width: 2rem;
-                    }
                 }
 
                 input[type="number"]::-webkit-outer-spin-button,

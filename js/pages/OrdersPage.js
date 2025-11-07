@@ -83,7 +83,7 @@ function renderOrdersByStatus(status, container) {
                                 onerror="this.onerror=null;this.src='https://placehold.co/80x80/E2E8F0/4A5568?text=N/A';"
                             />
                             <div>
-                                ${productName}
+                                <span class="text-ellipsis"> ${productName} </span>
                                 ${order.items.length > 1
                                     ? `<br><small class="text-muted">+ ${order.items.length - 1} other item(s)</small>`
                                     : ""}

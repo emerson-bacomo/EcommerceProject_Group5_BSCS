@@ -3,7 +3,7 @@ import { html } from "../utils/helpers.js";
 export const products = [
     {
         id: 1,
-        name: "Stylish Running Shoes",
+        name: "Stylish Running Shoesssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
         description: "Lightweight and breathable running shoes with excellent cushioning. Perfect for daily runs.",
         rating: 4.7,
         soldAmount: 152,
@@ -86,14 +86,14 @@ export const products = [
     },
     {
         id: 5,
-        name: "Insulated Steel Water Bottle",
+        name: "Insulated Steel Water Bottleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         description: "Keeps drinks cold...",
         rating: 4.9,
         soldAmount: 301,
         images: ["https://placehold.co/600x600/E2E8F0/4A5568?text=Bottle"],
         variations: {
             color: {
-                Silver: { image: null, sizes: { "32 oz": 1399.5 } },
+                Silverrrrrrrrrrrrrrrrrrrr: { image: null, sizes: { "32 oz": 1399.5 } },
                 MatteBlack: { image: "https://placehold.co/600x600/1A202C/FFFFFF?text=Black+Bottle", sizes: { "32 oz": 1450.0 } },
             },
         },

@@ -101,7 +101,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* Remove Bootstrap's glow and use a clean border color instead */
-.form-control:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: var(--bs-primary) !important;
     box-shadow: none !important; /* removes glow */
     outline: none !important;
@@ -138,4 +139,24 @@ body.menu-open::before {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 1040;
+}
+
+.text-ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-word; /* Ensures long words break if necessary */
+    line-height: 1.2; /* Adjust as needed for better spacing */
+    max-height: 2.4em; /* Should be line-height * 2 lines (e.g., 1.2 * 2 = 2.4) */
+}
+
+.text-ellipsis-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word; /* Ensures long words break if necessary */
+    line-height: 1.2; /* Adjust as needed for better spacing */
+    max-height: 2.4em; /* Should be line-height * 2 lines (e.g., 1.2 * 2 = 2.4) */
 }
