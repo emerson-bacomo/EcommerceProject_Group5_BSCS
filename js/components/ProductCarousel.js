@@ -1,3 +1,4 @@
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { html } from "../utils/helpers.js";
 import { createProductCard } from "./ProductCard.js";
 
@@ -54,16 +55,19 @@ export const createProductCarouselHTML = (productsList, idPrefix) => {
                 opacity: 1;
                 pointer-events: auto;
             }
-
             .product-carousel-arrow:hover {
                 box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
             }
-
             .product-carousel-arrow.prev {
                 left: -22px;
             }
             .product-carousel-arrow.next {
                 right: -22px;
+            }
+            @media (max-width: ${mobileMaxWidthPlus1}px) {
+                .product-carousel-arrow {
+                    display: none;
+                }
             }
         </style>
 

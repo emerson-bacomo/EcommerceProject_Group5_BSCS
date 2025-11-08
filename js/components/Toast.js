@@ -1,5 +1,6 @@
 import { mobileMaxWidthPlus1 } from "../config/general.js";
-import { html } from "../utils/helpers.js";
+import { navbar } from "../main.js";
+import { html, isMobile } from "../utils/helpers.js";
 
 export const showToast = (message, type = "success", infoMessage = null) => {
     const toastContainer = document.getElementById("toast-container");
@@ -67,8 +68,8 @@ export const showToast = (message, type = "success", infoMessage = null) => {
             }
             @media (max-width: ${mobileMaxWidthPlus1}px) {
                 #toast-container {
-                    top: auto;
-                    bottom: 1rem;
+                    top: var(--toast-top, 1rem);
+                    bottom: auto;
                     left: 50%;
                     right: auto;
                     transform: translateX(-50%);
@@ -108,6 +109,10 @@ export const showToast = (message, type = "success", infoMessage = null) => {
         </div>
     `;
     toastContainer.insertAdjacentHTML("beforeend", toastHTML);
+    if (isMobile()) {
+        toastContainer.style.setProperty("--toast-top", `${navbar.getBoundingClientRect().height + 8}px`);
+    }
+
     const toastDuration = type === "info" || infoMessage ? infoDuration : defaultDuration;
     // eslint-disable-next-line no-undef
     const toast = new bootstrap.Toast(document.getElementById(toastId), { delay: toastDuration });

@@ -42,7 +42,7 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
     const addressOptions = (S.appData.profile.addresses || [])
         .map(
             (addr, index) => html`
-                <div class="card card-body mb-2 position-relative">
+                <label class="card card-body mb-2 position-relative w-100" for="address${index}" style="cursor: pointer;">
                     <div class="form-check">
                         <input
                             class="form-check-input"
@@ -51,14 +51,15 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
                             id="address${index}"
                             value="${index}"
                             ${index === 0 ? "checked" : ""}
+                            style="cursor: pointer;"
                         />
-                        <label class="form-check-label w-100" for="address${index}">
+                        <div class="form-check-label w-100">
                             <strong>${addr.name}</strong><br />
                             ${addr.address}<br />
                             ${addr.phone}
-                        </label>
+                        </div>
                     </div>
-                </div>
+                </label>
             `
         )
         .join("");
@@ -77,6 +78,10 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
                 .card-body {
                     padding: 0.75rem;
                 }
+            }
+            .list-group-item strong {
+                position: relative;
+                top: -3px;
             }
         </style>
 

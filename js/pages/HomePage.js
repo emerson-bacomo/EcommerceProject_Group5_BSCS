@@ -317,12 +317,14 @@ export function renderHomePage(container) {
             }, timeRemaining);
         };
 
+        let isSliding = false; // Prevent slide event startProgress() and touchend event resumeProgress() (happens after) from colliding
         startProgress(); // Initial start
         slideNumberEl.textContent = `1 / ${totalSlides}`;
 
         bannerCarouselEl.addEventListener("slide.bs.carousel", (event) => {
             slideNumberEl.textContent = `${event.to + 1} / ${totalSlides}`;
             startProgress();
+            isSliding = true;
         });
 
         ["mousedown", "touchstart"].forEach((evt) =>
@@ -334,10 +336,11 @@ export function renderHomePage(container) {
 
         ["mouseup", "touchend", "mouseleave"].forEach((evt) =>
             bannerCarouselEl.addEventListener(evt, () => {
-                if (document.hidden === false && document.hasFocus()) {
+                if (!isSliding && document.hidden === false && document.hasFocus()) {
                     resumeProgress();
                 }
                 bannerCarouselEl.style.cursor = "default";
+                isSliding = false;
             })
         );
 
