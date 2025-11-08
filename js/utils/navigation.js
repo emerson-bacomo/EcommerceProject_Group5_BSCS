@@ -4,6 +4,7 @@ import { S } from "../state.js";
 import { isMobile } from "./helpers.js";
 
 let currentCleanup = null;
+const scrollPositions = {};
 
 export function navigateTo(pageKey, params = null, options = {}) {
     if (currentCleanup) {
@@ -12,6 +13,13 @@ export function navigateTo(pageKey, params = null, options = {}) {
     }
 
     closeMenu();
+
+    const currentPageHash = window.location.hash.split("?")[0]; // e.g., "#home-view"
+    const targetPageHash = `#${pageKey}`;
+
+    if (currentPageHash !== `#${pageKey}`) {
+        scrollPositions[currentPageHash] = window.scrollY;
+    }
 
     const appShell = document.getElementById("app-shell");
     const contentArea = appShell.querySelector("#app-content");
@@ -70,8 +78,6 @@ export function navigateTo(pageKey, params = null, options = {}) {
         hash += `?q=${encodeURIComponent(JSON.stringify(params))}`;
     }
 
-    const currentPageHash = window.location.hash.split("?")[0];
-    const targetPageHash = hash.split("?")[0];
     if (currentPageHash !== targetPageHash && window.location.hash !== hash) {
         history.pushState({ page: pageKey, params }, "", hash);
     }
@@ -81,6 +87,12 @@ export function navigateTo(pageKey, params = null, options = {}) {
             currentCleanup = S.views[pageKey](contentArea, params.item);
         } else {
             currentCleanup = S.views[pageKey](contentArea, params);
+        }
+
+        if (scrollPositions[targetPageHash] != null) {
+            window.scrollTo({ top: scrollPositions[targetPageHash], behavior: "instant" });
+        } else {
+            window.scrollTo({ top: 0, behavior: "instant" });
         }
     }
 }
