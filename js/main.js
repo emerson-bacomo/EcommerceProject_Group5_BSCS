@@ -20,6 +20,7 @@ import { renderCancellationSuccessPage } from "./pages/CancellationSuccessPage.j
 import { renderAddressDetailsPage } from "./pages/AddressDetailsPage.js";
 import { renderSearchPage } from "./pages/SearchPage.js";
 import { renderSettingsPage } from "./pages/SettingsPage.js";
+import { preloadImages } from "./config/products.js";
 
 S.views = {
     "home-view": (container) => renderHomePage(container),
@@ -42,6 +43,7 @@ S.views = {
 export let navbar;
 
 window.addEventListener("DOMContentLoaded", () => {
+    preloadImages();
     navbar = document.querySelector("nav.navbar");
     // eslint-disable-next-line no-undef
     S.promptLoginModal = new bootstrap.Modal(document.getElementById("promptLoginModal"));

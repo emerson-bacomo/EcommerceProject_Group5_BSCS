@@ -663,3 +663,24 @@ export const products = [
         },
     },
 ];
+
+export function preloadImages() {
+    const urls = [];
+
+    products.forEach((product) => {
+        // Add main images
+        urls.push(...product.images);
+
+        // Add variations images
+        if (product.variations && product.variations.color) {
+            Object.values(product.variations.color).forEach((variation) => {
+                urls.push(variation.image);
+            });
+        }
+    });
+
+    urls.forEach((url) => {
+        const img = new Image();
+        img.src = url; // browser preloads
+    });
+}
