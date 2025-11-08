@@ -154,6 +154,14 @@ export function renderHomePage(container) {
                           margin-bottom: 1.5rem;
                       }
 
+                      .navbar {
+                          background-color: transparent !important;
+                      }
+
+                      .navbar-white {
+                          background-color: white !important;
+                      }
+
                       .navbar-transparent-at-top {
                           background-color: transparent !important;
                           border-bottom: none !important;
@@ -371,6 +379,7 @@ export function renderHomePage(container) {
         const scrollY = window.scrollY;
         if (scrollY > 50) {
             navbar.classList.remove("navbar-transparent-at-top");
+            navbar.classList.add("navbar-white");
         } else {
             navbar.classList.add("navbar-transparent-at-top");
         }
