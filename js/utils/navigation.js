@@ -4,22 +4,18 @@ import { S } from "../state.js";
 import { isMobile } from "./helpers.js";
 
 let currentCleanup = null;
+let lastHash = window.location.hash;
 const scrollPositions = {};
 
 export function navigateTo(pageKey, params = null, options = {}) {
+    const currentScrollY = window.scrollY; // Store first before innerHtml is cleared
+
     if (currentCleanup) {
         currentCleanup();
         currentCleanup = null;
     }
 
     closeMenu();
-
-    const currentPageHash = window.location.hash.split("?")[0]; // e.g., "#home-view"
-    const targetPageHash = `#${pageKey}`;
-
-    if (currentPageHash !== `#${pageKey}`) {
-        scrollPositions[currentPageHash] = window.scrollY;
-    }
 
     const appShell = document.getElementById("app-shell");
     const contentArea = appShell.querySelector("#app-content");
@@ -78,8 +74,12 @@ export function navigateTo(pageKey, params = null, options = {}) {
         hash += `?q=${encodeURIComponent(JSON.stringify(params))}`;
     }
 
-    if (currentPageHash !== targetPageHash && window.location.hash !== hash) {
+    const currentPageHash = window.location.hash;
+
+    if (currentPageHash !== hash) {
         history.pushState({ page: pageKey, params }, "", hash);
+        scrollPositions[currentPageHash] = currentScrollY;
+        lastHash = hash;
     }
 
     if (S.views[pageKey]) {
@@ -89,17 +89,16 @@ export function navigateTo(pageKey, params = null, options = {}) {
             currentCleanup = S.views[pageKey](contentArea, params);
         }
 
-        if (scrollPositions[targetPageHash] != null) {
-            window.scrollTo({ top: scrollPositions[targetPageHash], behavior: "instant" });
-        } else {
-            window.scrollTo({ top: 0, behavior: "instant" });
+        if (options.preserveScroll) {
+            // Only preserve when needed like for back navigation, no need to preserve for normal navigation
+            window.scrollTo({ top: scrollPositions[hash] ?? 0, behavior: "instant" });
         }
     }
 }
 
 export function handleInitialNavigation() {
     const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
-    const hash = window.location.hash.split("?")[0].substring(1) || "home-view";
+    const pageKey = window.location.hash.split("?")[0].substring(1) || "home-view";
     const productId = urlParams.get("id");
     const cartKey = urlParams.get("cartKey");
     const orderId = urlParams.get("id");
@@ -108,8 +107,8 @@ export function handleInitialNavigation() {
     const returnToParam = urlParams.get("returnTo");
     const fromCheckoutParam = urlParams.get("fromCheckout");
 
-    if (S.views[hash]) {
-        if (hash === "login-view" || hash === "signup-view") {
+    if (S.views[pageKey]) {
+        if (pageKey === "login-view" || pageKey === "signup-view") {
             if (S.currentUser) {
                 // if logged in but went to login page through history or nav buttons
                 if (returnToParam) {
@@ -118,22 +117,21 @@ export function handleInitialNavigation() {
                     navigateTo("home-view");
                 }
             } else {
-                navigateTo(hash, null, { skipReturnTo: Boolean(returnToParam) });
+                navigateTo(pageKey, null, { skipReturnTo: Boolean(returnToParam) });
             }
-        } else if (S.protectedViews.includes(hash) && !S.currentUser) {
+        } else if (S.protectedViews.includes(pageKey) && !S.currentUser) {
             navigateTo("login-view");
-        } else if (hash === "product-detail-view" && productId) {
-            console.log(hash);
-            navigateTo(hash, { productId, cartKey });
-        } else if (hash === "order-detail-view" && orderId) {
-            navigateTo(hash, orderId);
-        } else if (hash === "address-management-view") {
-            navigateTo(hash, { fromCheckout: fromCheckoutParam === "true" });
-        } else if (hash === "checkout-view" && buyNowParam) {
+        } else if (pageKey === "product-detail-view" && productId) {
+            navigateTo(pageKey, { productId, cartKey }, { preserveScroll: true });
+        } else if (pageKey === "order-detail-view" && orderId) {
+            navigateTo(pageKey, orderId, { preserveScroll: true });
+        } else if (pageKey === "address-management-view") {
+            navigateTo(pageKey, { fromCheckout: fromCheckoutParam === "true" }, { preserveScroll: true });
+        } else if (pageKey === "checkout-view" && buyNowParam) {
             try {
                 const item = JSON.parse(decodeURIComponent(buyNowParam));
                 S.buyNowItem = item;
-                navigateTo(hash, { buyNow: true, item });
+                navigateTo(pageKey, { buyNow: true, item }, { preserveScroll: true });
             } catch (e) {
                 console.error("Error parsing buyNow param on load:", e);
                 S.buyNowItem = null;
@@ -142,7 +140,7 @@ export function handleInitialNavigation() {
         } else {
             const params = queryParam ? JSON.parse(decodeURIComponent(queryParam)) : null;
             S.buyNowItem = null;
-            navigateTo(hash, params);
+            navigateTo(pageKey, params, { preserveScroll: true });
         }
     } else {
         S.buyNowItem = null;
@@ -151,5 +149,15 @@ export function handleInitialNavigation() {
 }
 
 export function setupNavigation() {
-    window.addEventListener("hashchange", () => handleInitialNavigation());
+    window.addEventListener("hashchange", () => {
+        // Save scroll of page being left
+        if (lastHash) {
+            scrollPositions[lastHash] = window.scrollY;
+        }
+
+        // Update last known hash before navigating
+        lastHash = window.location.hash;
+
+        handleInitialNavigation();
+    });
 }
