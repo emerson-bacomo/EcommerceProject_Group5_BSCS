@@ -7,7 +7,7 @@ export const products = [
         description: "Lightweight and breathable running shoes with excellent cushioning. Perfect for daily runs.",
         rating: 4.8,
         soldAmount: 152,
-        images: ["assets/products/Nike Vomero Plus(Angle1).jpg", "assets/products/Nike Vomero Plus(Angle2).jpg"],
+        images: ["assets/products/Nike Vomero Plus(Angle1).jpg", "assets/products/Nike Vomero Plus(Angle2).avif"],
         banner: html`
             <div class="banner-slide" style="background-image: url('assets/banners/53-best-running-shoes-15275001-main.webp');">
                 <div class="banner-content">
@@ -20,11 +20,11 @@ export const products = [
         variations: {
             color: {
                 Black: {
-                    image: "assets/products/NIKE+VOMERO+PLUS(BLACK).jpg",
+                    image: "assets/products/NIKE+VOMERO+PLUS(BLACK).avif",
                     sizes: { "EU 39 / US 6": 2800.0, "EU 40 / US 7": 2800.0, "EU 41 / US 8": 2850.0, "EU 42 / US 9": 2850.0 },
                 },
                 WhiteBlue: {
-                    image: "assets/products/NIKE+VOMERO+PLUS(BLUE).jpg",
+                    image: "assets/products/NIKE+VOMERO+PLUS(BLUE).avif",
                     sizes: { "EU 40 / US 7": 2900.0, "EU 41 / US 8": 2900.0, "EU 42 / US 9": 2950.0 },
                 },
                 White: {
@@ -32,7 +32,7 @@ export const products = [
                     sizes: { "EU 38 / US 5": 2750.0, "EU 39 / US 6": 2750.0, "EU 40 / US 7": 2750.0 },
                 },
                 Orange: {
-                    image: "assets/products/Nike Vomero Plus(Angle2).jpg",
+                    image: "assets/products/Nike Vomero Plus(Angle2).avif",
                     sizes: { "EU 38 / US 5": 2750.0, "EU 39 / US 6": 2750.0, "EU 40 / US 7": 2750.0 },
                 },
             },
@@ -44,7 +44,10 @@ export const products = [
         description: "Skate Shoes.",
         rating: 4.9,
         soldAmount: 124,
-        images: ["assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(ANGLE1).jpg", "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(ANGLE2).jpg"],
+        images: [
+            "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(ANGLE1).jpeg",
+            "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(ANGLE2).jpeg",
+        ],
         banner: html`
             <div class="banner-slide" style="background-image: url('assets/banners/Nike-2.png');">
                 <div class="banner-content">
@@ -57,11 +60,11 @@ export const products = [
         variations: {
             color: {
                 Black: {
-                    image: "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(BLACK).jpg",
+                    image: "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(BLACK).jpeg",
                     sizes: { "EU 39 / US 6": 4850.0, "EU 40 / US 7": 4850.0, "EU 41 / US 8": 4900.0, "EU 42 / US 9": 5199.0 },
                 },
                 Blue: {
-                    image: "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(BLUE).jpg",
+                    image: "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(BLUE).jpeg",
                     sizes: { "EU 40 / US 7": 4850.0, "EU 41 / US 8": 4850.0, "EU 42 / US 9": 4950.0 },
                 },
                 White: {
@@ -78,17 +81,17 @@ export const products = [
         rating: 5.0,
         soldAmount: 125,
         images: [
-            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE1).jpg",
-            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE2).jpg",
+            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE1).jpeg",
+            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE2).jpeg",
         ],
         variations: {
             color: {
                 Gold: {
-                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(GOLD).jpg",
+                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(GOLD).jpeg",
                     sizes: { "EU 39 / US 6": 7199.0, "EU 40 / US 7": 7199.0, "EU 41 / US 8": 7299.0, "EU 42 / US 9": 7599.0 },
                 },
                 Orange: {
-                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ORANGE).jpg",
+                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ORANGE).jpeg",
                     sizes: { "EU 40 / US 7": 7199.0, "EU 41 / US 8": 7299.0, "EU 42 / US 9": 7599.0 },
                 },
             },
@@ -100,19 +103,19 @@ export const products = [
         description: "Stylish Shoes.",
         rating: 4.0,
         soldAmount: 411,
-        images: ["assets/products/AIR+WINFLO+10(ANGLE1).jpg", "assets/products/AIR+WINFLO+10(ANGLE2).jpg"],
+        images: ["assets/products/AIR+WINFLO+10(ANGLE1).jpeg", "assets/products/AIR+WINFLO+10(ANGLE2).jpeg"],
         variations: {
             color: {
                 Black: {
-                    image: "assets/products/AIR+WINFLO+10(BLACK).jpg",
+                    image: "assets/products/AIR+WINFLO+10(BLACK).jpeg",
                     sizes: { "EU 39 / US 6": 3199.0, "EU 40 / US 7": 3199.0, "EU 41 / US 8": 3199.0, "EU 42 / US 9": 3199.0 },
                 },
                 White: {
-                    image: "assets/products/AIR+WINFLO+10(WHITE).jpg",
+                    image: "assets/products/AIR+WINFLO+10(WHITE).jpeg",
                     sizes: { "EU 40 / US 7": 3199.0, "EU 41 / US 8": 3199.0, "EU 42 / US 9": 3199.0 },
                 },
                 WhiteOrange: {
-                    image: "assets/products/AIR+WINFLO+10(WHITEORANGE).jpg",
+                    image: "assets/products/AIR+WINFLO+10(WHITEORANGE).jpeg",
                     sizes: { "EU 40 / US 7": 3199.0, "EU 41 / US 8": 3199.0, "EU 42 / US 9": 3199.0 },
                 },
             },
@@ -125,13 +128,13 @@ export const products = [
         rating: 5.0,
         soldAmount: 132,
         images: [
-            "assets/products/women-s-ld-1000-velvet-brown-and-safety-orange-im9008-201-release-date(ANGLE1).jpg",
-            "assets/products/women-s-ld-1000-velvet-brown-and-safety-orange-im9008-201-release-date(ANGLE2).jpg",
+            "assets/products/women-s-ld-1000-velvet-brown-and-safety-orange-im9008-201-release-date(ANGLE1).jpeg",
+            "assets/products/women-s-ld-1000-velvet-brown-and-safety-orange-im9008-201-release-date(ANGLE2).jpeg",
         ],
         variations: {
             color: {
                 Brown: {
-                    image: "assets/products/women-s-ld-1000-velvet-brown-and-safety-orange(BROWN)",
+                    image: "assets/products/women-s-ld-1000-velvet-brown-and-safety-orange(BROWN).jpeg",
                     sizes: { "EU 39 / US 6": 8199.0, "EU 40 / US 7": 8199.0, "EU 41 / US 8": 8199.0, "EU 42 / US 9": 8199.0 },
                 },
             },
@@ -143,21 +146,21 @@ export const products = [
         description: "Men's Elite Outdoor Shoes",
         rating: 3.9,
         soldAmount: 231,
-        images: ["assets/products/NIKE+REACT+SFB+CARBON(ANGLE1).jpg", "assets/products/NIKE+REACT+SFB+CARBON(ANGLE2).jpg"],
+        images: ["assets/products/NIKE+REACT+SFB+CARBON(ANGLE1).jpeg", "assets/products/NIKE+REACT+SFB+CARBON(ANGLE2).jpeg"],
         variations: {
             color: {
                 Brown: {
-                    image: "assets/products/NIKE+REACT+SFB+CARBON(BROWN).jpg",
+                    image: "assets/products/NIKE+REACT+SFB+CARBON(BROWN).jpeg",
                     sizes: {
                         "EU 39 / US 6": 8995.0,
                         "EU 40 / US 7": 8995.0,
                         "EU 41 / US 8": 8995.0,
                         "EU 42 / US 9": 8995.0,
-                        "EU 43/ US 10": 8995.0,
+                        "EU 43 / US 10": 8995.0,
                     },
                 },
                 Black: {
-                    image: "assets/products/NIKE+REACT+SFB+CARBON(BLACK).jpg",
+                    image: "assets/products/NIKE+REACT+SFB+CARBON(BLACK).jpeg",
                     sizes: { "EU 39 / US 6": 8995.0, "EU 40 / US 7": 8995.0, "EU 41 / US 8": 8995.0, "EU 42 / US 9": 8995.0 },
                 },
             },
@@ -169,29 +172,29 @@ export const products = [
         description: "Men's Workout Shoes",
         rating: 5.0,
         soldAmount: 245,
-        images: ["assets/products/LEBRON+TR+1(ANGLE1).jpg", "assets/products/LEBRON+TR+1(ANGLE2).jpg"],
+        images: ["assets/products/LEBRON+TR+1(ANGLE1).jpeg", "assets/products/LEBRON+TR+1(ANGLE2).jpeg"],
         variations: {
             color: {
                 GoldWhite: {
-                    image: "assets/products/LEBRON+TR+1(GOLDWHITE).jpg",
+                    image: "assets/products/LEBRON+TR+1(GOLDWHITE).jpeg",
                     sizes: {
                         "EU 39 / US 6": 7350.0,
                         "EU 40 / US 7": 7350.0,
                         "EU 41 / US 8": 7350.0,
                         "EU 42 / US 9": 7350.0,
-                        "EU 44/ US 11": 7350.0,
-                        "EU 45/ US 12": 7450.0,
+                        "EU 44 / US 11": 7350.0,
+                        "EU 45 / US 12": 7450.0,
                     },
                 },
                 Green: {
-                    image: "assets/products/LEBRON+TR+1(GREEN).jpg",
+                    image: "assets/products/LEBRON+TR+1(GREEN).jpeg",
                     sizes: {
                         "EU 39 / US 6": 7350.0,
                         "EU 40 / US 7": 7350.0,
                         "EU 41 / US 8": 7350.0,
                         "EU 42 / US 9": 7350.0,
-                        "EU 43/ US 10": 7350.0,
-                        "EU 44/ US 11": 7350.0,
+                        "EU 43 / US 10": 7350.0,
+                        "EU 44 / US 11": 7350.0,
                     },
                 },
             },
@@ -204,31 +207,31 @@ export const products = [
         rating: 4.5,
         soldAmount: 245,
         images: [
-            "assets/products/VL_Court_3.0_Shoes_Black_JR8609_04_standard(ANGLE1).jpg",
-            "assets/products/VL_COURT_3.0_SHOES_White_JS1850_02_standard_hover(ANGLE2).jpg",
+            "assets/products/VL_Court_3.0_Shoes_Black_JR8609_04_standard(ANGLE1).jpeg",
+            "assets/products/VL_COURT_3.0_SHOES_White_JS1850_02_standard_hover(ANGLE2).jpeg",
         ],
         variations: {
             color: {
                 Black: {
-                    image: "assets/products/VL_Court_3.0_Shoes_Black_JR8609_01_00_standard(BLACK).jpg",
+                    image: "assets/products/VL_Court_3.0_Shoes_Black_JR8609_01_00_standard(BLACK).jpeg",
                     sizes: {
                         "EU 39 / US 6": 4299.0,
                         "EU 40 / US 7": 4299.0,
                         "EU 41 / US 8": 4299.0,
                         "EU 42 / US 9": 4299.0,
-                        "EU 44/ US 11": 4499.0,
-                        "EU 45/ US 12": 4550.0,
+                        "EU 44 / US 11": 4499.0,
+                        "EU 45 / US 12": 4550.0,
                     },
                 },
                 OffWhite: {
-                    image: "assets/products/VL_COURT_3.0_SHOES_White_JS1850_01_00_standard(OFFWHITE).jpg",
+                    image: "assets/products/VL_COURT_3.0_SHOES_White_JS1850_01_00_standard(OFFWHITE).jpeg",
                     sizes: {
                         "EU 39 / US 6": 4299.0,
                         "EU 40 / US 7": 4299.0,
                         "EU 41 / US 8": 4299.0,
                         "EU 42 / US 9": 4299.0,
-                        "EU 43/ US 10": 4299.0,
-                        "EU 44/ US 11": 4499.0,
+                        "EU 43 / US 10": 4299.0,
+                        "EU 44 / US 11": 4499.0,
                     },
                 },
             },
@@ -241,13 +244,13 @@ export const products = [
         rating: 3.9,
         soldAmount: 153,
         images: [
-            "assets/products/Run Star Hike Canvas Platform Shoes - Black(ANGLE1).jpg",
-            "assets/products/Run Star Hike Canvas Platform Shoes - Black(ANGLE2).jpg",
+            "assets/products/0802-CON166800C000003-3(new angle1).jpg",
+            "assets/products/0802-CON166800C000003-5(new angle2).jpg",
         ],
         variations: {
             color: {
                 Black: {
-                    image: "assets/products/Run Star Hike Canvas Platform Shoes - Black(BLACK).jpg",
+                    image: "assets/products/Run Star Hike Canvas Platform Shoes - Black(BLACK).jpeg",
                     sizes: {
                         "EU 39 / US 6": 5499.0,
                         "EU 40 / US 7": 5499.0,
@@ -358,8 +361,8 @@ export const products = [
                         "EU 40 / US 7": 5499.0,
                         "EU 41 / US 8": 5499.0,
                         "EU 42 / US 9": 5499.0,
-                        "EU 44/ US 11": 5699.0,
-                        "EU 45/ US 12": 5750.0,
+                        "EU 44 / US 11": 5699.0,
+                        "EU 45 / US 12": 5750.0,
                     },
                 },
                 BlackGold: {
@@ -369,8 +372,8 @@ export const products = [
                         "EU 40 / US 7": 5499.0,
                         "EU 41 / US 8": 5499.0,
                         "EU 42 / US 9": 5499.0,
-                        "EU 43/ US 10": 5499.0,
-                        "EU 44/ US 11": 5699.0,
+                        "EU 43 / US 10": 5499.0,
+                        "EU 44 / US 11": 5699.0,
                     },
                 },
                 WhitePink: {
@@ -380,8 +383,8 @@ export const products = [
                         "EU 40 / US 7": 5499.0,
                         "EU 41 / US 8": 5499.0,
                         "EU 42 / US 9": 5499.0,
-                        "EU 43/ US 10": 5499.0,
-                        "EU 44/ US 11": 5699.0,
+                        "EU 43 / US 10": 5499.0,
+                        "EU 44 / US 11": 5699.0,
                     },
                 },
             },
@@ -403,8 +406,8 @@ export const products = [
                         "EU 40 / US 7": 6199.0,
                         "EU 41 / US 8": 6199.0,
                         "EU 42 / US 9": 6199.0,
-                        "EU 44/ US 11": 6399.0,
-                        "EU 45/ US 12": 6499.0,
+                        "EU 44 / US 11": 6399.0,
+                        "EU 45 / US 12": 6499.0,
                     },
                 },
                 BlackWhite: {
@@ -414,8 +417,8 @@ export const products = [
                         "EU 40 / US 7": 6199.0,
                         "EU 41 / US 8": 6199.0,
                         "EU 42 / US 9": 6199.0,
-                        "EU 43/ US 10": 6199.0,
-                        "EU 44/ US 11": 6399.0,
+                        "EU 43 / US 10": 6199.0,
+                        "EU 44 / US 11": 6399.0,
                     },
                 },
             },
@@ -440,8 +443,8 @@ export const products = [
                         "EU 40 / US 7": 3499.0,
                         "EU 41 / US 8": 3499.0,
                         "EU 42 / US 9": 3499.0,
-                        "EU 44/ US 11": 3599.0,
-                        "EU 45/ US 12": 3499.0,
+                        "EU 44 / US 11": 3599.0,
+                        "EU 45 / US 12": 3499.0,
                     },
                 },
             },
@@ -467,8 +470,8 @@ export const products = [
                         "EU 40 / US 7": 9450.0,
                         "EU 41 / US 8": 9450.0,
                         "EU 42 / US 9": 9450.0,
-                        "EU 44/ US 11": 9450.0,
-                        "EU 45/ US 12": 9650.0,
+                        "EU 44 / US 11": 9450.0,
+                        "EU 45 / US 12": 9650.0,
                     },
                 },
                 WhiteAlpine: {
@@ -478,8 +481,8 @@ export const products = [
                         "EU 40 / US 7": 9450.0,
                         "EU 41 / US 8": 9450.0,
                         "EU 42 / US 9": 9450.0,
-                        "EU 43/ US 10": 9450.0,
-                        "EU 44/ US 11": 9450.0,
+                        "EU 43 / US 10": 9450.0,
+                        "EU 44 / US 11": 9450.0,
                     },
                 },
             },
@@ -502,8 +505,8 @@ export const products = [
                         "EU 40 / US 7": 4899.0,
                         "EU 41 / US 8": 4899.0,
                         "EU 42 / US 9": 4999.0,
-                        "EU 44/ US 11": 4999.0,
-                        "EU 45/ US 12": 4999.0,
+                        "EU 44 / US 11": 4999.0,
+                        "EU 45 / US 12": 4999.0,
                     },
                 },
                 WhitePeyote: {
@@ -513,8 +516,8 @@ export const products = [
                         "EU 40 / US 7": 4899.0,
                         "EU 41 / US 8": 4899.0,
                         "EU 42 / US 9": 4899.0,
-                        "EU 43/ US 10": 4899.0,
-                        "EU 44/ US 11": 4999.0,
+                        "EU 43 / US 10": 4899.0,
+                        "EU 44 / US 11": 4999.0,
                     },
                 },
                 WhitePink: {
@@ -524,8 +527,8 @@ export const products = [
                         "EU 40 / US 7": 4899.0,
                         "EU 41 / US 8": 4899.0,
                         "EU 42 / US 9": 4899.0,
-                        "EU 43/ US 10": 4899.0,
-                        "EU 44/ US 11": 4999.0,
+                        "EU 43 / US 10": 4899.0,
+                        "EU 44 / US 11": 4999.0,
                     },
                 },
             },
@@ -537,7 +540,10 @@ export const products = [
         description: "Converse Omega Trainer Unisex Sneakers - Yeti Blue/Slacker",
         rating: 4.8,
         soldAmount: 245,
-        images: ["assets/products/0802-CONA13320C12W09H-4(ANGLE1).jpg", "assets/products/0802-CONA13323C00W09H-3(ANGLE2).jpg"],
+        images: [
+            "assets/products/0802-CONA13320C12W09H-4(new angle1).jpg",
+            "assets/products/0802-CONA13323C00W09H-3(new angle2).jpg",
+        ],
         variations: {
             color: {
                 Blue: {
@@ -547,8 +553,8 @@ export const products = [
                         "EU 40 / US 7": 3899.0,
                         "EU 41 / US 8": 3899.0,
                         "EU 42 / US 9": 3899.0,
-                        "EU 44/ US 11": 3899.0,
-                        "EU 45/ US 12": 3899.0,
+                        "EU 44 / US 11": 3899.0,
+                        "EU 45 / US 12": 3899.0,
                     },
                 },
                 DirtyWhite: {
@@ -558,8 +564,8 @@ export const products = [
                         "EU 40 / US 7": 3899.0,
                         "EU 41 / US 8": 3899.0,
                         "EU 42 / US 9": 3899.0,
-                        "EU 43/ US 10": 3899.0,
-                        "EU 44/ US 11": 3899.0,
+                        "EU 43 / US 10": 3899.0,
+                        "EU 44 / US 11": 3899.0,
                     },
                 },
             },
@@ -585,8 +591,8 @@ export const products = [
                         "EU 40 / US 7": 8350.0,
                         "EU 41 / US 8": 8350.0,
                         "EU 42 / US 9": 8350.0,
-                        "EU 44/ US 11": 8350.0,
-                        "EU 45/ US 12": 8450.0,
+                        "EU 44 / US 11": 8350.0,
+                        "EU 45 / US 12": 8450.0,
                     },
                 },
                 Black: {
@@ -596,8 +602,8 @@ export const products = [
                         "EU 40 / US 7": 8350.0,
                         "EU 41 / US 8": 8350.0,
                         "EU 42 / US 9": 8350.0,
-                        "EU 43/ US 10": 8350.0,
-                        "EU 44/ US 11": 8350.0,
+                        "EU 43 / US 10": 8350.0,
+                        "EU 44 / US 11": 8350.0,
                     },
                 },
             },
@@ -622,8 +628,8 @@ export const products = [
                         "EU 40 / US 7": 10000.0,
                         "EU 41 / US 8": 10000.0,
                         "EU 42 / US 9": 10000.0,
-                        "EU 44/ US 11": 10000.0,
-                        "EU 45/ US 12": 10000.0,
+                        "EU 44 / US 11": 10000.0,
+                        "EU 45 / US 12": 10000.0,
                     },
                 },
             },
@@ -637,20 +643,20 @@ export const products = [
         rating: 5.0,
         soldAmount: 245,
         images: [
-            "assets/products/ForeverRun-NITRO™-Women's-Running-Shoes(ANGLE1).jpg",
-            "assets/products/ForeverRun-NITRO™-Women's-Running-Shoes(ANGLE2).jpg",
+            "assets/products/ForeverRun-NITRO™-Women_s-Running-Shoes(ANGLE1).jpg",
+            "assets/products/ForeverRun-NITRO™-Women_s-Running-Shoes(ANGLE2).jpg",
         ],
         variations: {
             color: {
                 BlackOrange: {
-                    image: "assets/products/ForeverRun-NITRO™-Women's-Running-Shoes(BLACKORANGE).jpg",
+                    image: "assets/products/ForeverRun-NITRO™-Women_s-Running-Shoes(BLACKORANGE).jpg",
                     sizes: {
                         "EU 39 / US 6": 8700.0,
                         "EU 40 / US 7": 8700.0,
                         "EU 41 / US 8": 8700.0,
                         "EU 42 / US 9": 8700.0,
-                        "EU 44/ US 11": 8700.0,
-                        "EU 45/ US 12": 8700.0,
+                        "EU 44 / US 11": 8700.0,
+                        "EU 45 / US 12": 8700.0,
                     },
                 },
             },
