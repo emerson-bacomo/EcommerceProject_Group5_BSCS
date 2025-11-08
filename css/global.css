@@ -133,10 +133,6 @@ input[type="number"]::-webkit-inner-spin-button {
     transform: translateX(0);
 }
 
-body.menu-open {
-    position: fixed;
-}
-
 /* Add subtle dark overlay behind the menu */
 body.menu-open::before {
     content: "";

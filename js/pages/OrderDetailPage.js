@@ -67,7 +67,7 @@ export function renderOrderDetailPage(container, orderId) {
                         </h5>
                     </div>
                 </div>
-                <div class="card mb-4">
+                <div class="card">
                     <div class="card-header"><h5>Items Ordered</h5></div>
                     <ul class="list-group list-group-flush">
                         ${itemsHTML}
@@ -78,7 +78,8 @@ export function renderOrderDetailPage(container, orderId) {
                 <div class="card mb-4">
                     <div class="card-header"><h5>Shipping Address</h5></div>
                     <div class="card-body">
-                        <strong>${order.shippingAddress.name}</strong><br />${order.shippingAddress.address}<br />Phone:
+                        <strong>${order.shippingAddress.name}</strong><br />
+                        ${order.shippingAddress.address}<br />
                         ${order.shippingAddress.phone}
                     </div>
                 </div>

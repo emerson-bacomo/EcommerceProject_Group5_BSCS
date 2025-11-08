@@ -4,6 +4,24 @@ import { navigateTo } from "../utils/navigation.js";
 
 export function renderOrdersPage(container) {
     container.innerHTML = html`
+        <style>
+            #orders-tabs {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+                scrollbar-width: none; /* Firefox: hide scrollbar */
+            }
+
+            #orders-tabs::-webkit-scrollbar {
+                display: none; /* Chrome/Safari: hide scrollbar */
+            }
+
+            #orders-tabs .nav-item {
+                flex: 0 0 auto; /* don't shrink items */
+            }
+        </style>
         <h1 class="mb-4">My Orders</h1>
         <ul class="nav nav-pills mb-3" id="orders-tabs" role="tablist">
             <li class="nav-item" role="presentation">
