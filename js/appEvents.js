@@ -3,7 +3,7 @@ import { S } from "./state.js";
 import { saveUserData, loadUserData, clearCurrentUser, getCurrentUser } from "./utils/storage.js";
 import { html } from "./utils/helpers.js";
 import { updateCartBadge } from "./pages/CartPage.js";
-import { addSearchToHistory, setupSearchEventListeners } from "./pages/SearchPage.js";
+import { addSearchToHistory, setupSearchEventListeners, showSearchHistory } from "./pages/SearchPage.js";
 
 export function setupAppListeners() {
     document.body.addEventListener("click", (e) => {
@@ -61,33 +61,81 @@ export function setupAppListeners() {
 
     setupSearchEventListeners(document);
 
+    searchInput.removeEventListener("focus", searchInput._focusEventListener);
+    let hasHandledBlur = true;
+
+    searchInput.addEventListener("focus", () => {
+        if (!hasHandledBlur) return;
+        hasHandledBlur = false;
+
+        searchDropdown.classList.remove("show", "unshow");
+        searchContainer.addEventListener(
+            "transitionend",
+            () => {
+                if (!searchDropdown.classList.contains("show")) {
+                    showSearchHistory(searchDropdown); // populate dropdown
+
+                    // Delay adding "show" to trigger the transition smoothly
+                    setTimeout(() => {
+                        searchDropdown.classList.add("show");
+                    }, 200);
+                }
+            },
+            { once: true }
+        );
+    });
+
+    const handleSearchInputBlur = () => {
+        if (!document.hasFocus()) return;
+
+        if (!searchInput.value) {
+            searchDropdown.classList.add("unshow"); // hide dropdown first
+
+            setTimeout(() => {
+                searchContainer.classList.remove("active"); // trigger container collapse
+
+                setTimeout(() => {
+                    searchToggle.style.display = "block"; // show toggle again
+                    hasHandledBlur = true;
+                }, 200);
+            }, 400);
+        }
+    };
+
+    searchInput.addEventListener("blur", handleSearchInputBlur);
+
     document.addEventListener("click", (e) => {
         if (!e.target.closest(".search-container")) searchDropdown.classList.remove("show");
+
         const historyItem = e.target.closest(".history-item");
+        const autocompleteItem = e.target.closest(".autocomplete-item");
+
         if (historyItem) {
             e.preventDefault();
             const term = historyItem.dataset.term;
-            searchInput.value = term;
-            addSearchToHistory(term);
-            S.buyNowItem = null;
-            navigateTo("search-results-view", term);
+            const productId = historyItem.dataset.productId;
+
+            if (productId) {
+                navigateTo("product-detail-view", productId);
+                handleSearchInputBlur();
+            } else {
+                searchInput.value = term;
+                navigateTo("search-results-view", term);
+            }
+
+            addSearchToHistory({ term, productId }); // refresh position in history
             searchDropdown.classList.remove("show");
         }
-        const autocompleteItem = e.target.closest(".autocomplete-item");
+
         if (autocompleteItem) {
             e.preventDefault();
-            addSearchToHistory(autocompleteItem.querySelector("span").textContent);
-            S.buyNowItem = null;
-            navigateTo("product-detail-view", autocompleteItem.dataset.productId);
-            searchDropdown.classList.remove("show");
-        }
-    });
+            const term = autocompleteItem.querySelector("span").textContent;
+            const productId = autocompleteItem.dataset.productId;
 
-    searchInput.addEventListener("blur", () => {
-        if (!searchInput.value) {
-            searchContainer.classList.remove("active");
-            // listen once for the transition to finish before showing the toggle again
-            searchContainer.addEventListener("transitionend", () => (searchToggle.style.display = "block"), { once: true });
+            searchInput.value = "";
+            handleSearchInputBlur();
+            addSearchToHistory({ term, productId });
+            navigateTo("product-detail-view", productId);
         }
     });
 

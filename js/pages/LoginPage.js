@@ -4,6 +4,7 @@ import { getUsers, setCurrentUser } from "../utils/storage.js";
 import { initApp } from "../appEvents.js";
 import { authCss } from "../../css/auth.js";
 import { setupPasswordToggles, setupErrorHandling } from "../utils/formUtilities.js";
+import { mergeGuestSearchHistory } from "./SearchPage.js";
 
 export function renderLoginPage(container) {
     container.innerHTML = html`
@@ -64,6 +65,7 @@ export function renderLoginPage(container) {
         setCurrentUser(user, form.querySelector("#remember-me").checked);
         form.reset();
         initApp(user);
+        mergeGuestSearchHistory();
 
         const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
         const returnTo = urlParams.get("returnTo");
