@@ -106,12 +106,6 @@ export function renderSignupPage(container) {
         showToast("Sign up successful! Please log in.");
         form.reset();
 
-        const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
-        const returnTo = urlParams.get("returnTo");
-        if (returnTo) {
-            window.location.hash = `#login-view?returnTo=${encodeURIComponent(returnTo)}`;
-        } else {
-            navigateTo("login-view");
-        }
+        navigateTo("#login-view");
     });
 }

@@ -2,6 +2,7 @@ import { showConfirmationModal, showToast } from "../components/Toast.js";
 import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { S } from "../state.js";
 import { html, getProductById, formatCurrency, classNames, isMobile } from "../utils/helpers.js";
+import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
 
 export function renderCartPage(container) {
@@ -234,8 +235,7 @@ export function renderCartPage(container) {
             const cartItemLink = e.target;
             const cartKey = cartItemLink.closest(".cart-item").dataset.cartKey;
             const productId = cartItemLink.dataset.productId;
-            S.buyNowItem = null;
-            window.location.hash = `#product-detail-view?id=${productId}&cartKey=${encodeURIComponent(cartKey)}`;
+            navigateTo(`#product-detail-view?id=${productId}&cartKey=${encodeURIComponent(cartKey)}`);
         });
     });
 

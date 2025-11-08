@@ -12,18 +12,16 @@ export function setupAppListeners() {
             e.preventDefault();
             const pageKey = pageLink.dataset.page;
             if (S.protectedViews.includes(pageKey) && !S.currentUser) {
-                navigateTo("login-view");
+                navigateTo("#login-view");
                 return;
             }
-            if (pageKey !== "checkout-view" || !e.target.closest("#place-order-btn")) S.buyNowItem = null;
-            navigateTo(pageKey);
+            navigateTo(`#${pageKey}`);
         }
 
         const productCard = e.target.closest("product-card");
         if (productCard) {
             const productId = productCard.dataset.productId;
-            S.buyNowItem = null;
-            navigateTo("product-detail-view", productId);
+            navigateTo(`#product-detail-view?id=${encodeURIComponent(productId)}`);
         }
     });
 
@@ -33,7 +31,7 @@ export function setupAppListeners() {
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) modal.hide();
 
-        navigateTo("login-view");
+        navigateTo("#login-view");
     });
     document.getElementById("prompt-signup-btn").addEventListener("click", () => {
         const modalEl = document.getElementById("promptLoginModal");
@@ -41,9 +39,9 @@ export function setupAppListeners() {
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) modal.hide();
 
-        navigateTo("signup-view");
+        navigateTo("#signup-view");
     });
-    document.getElementById("view-orders-btn").addEventListener("click", () => navigateTo("orders-view"));
+    document.getElementById("view-orders-btn").addEventListener("click", () => navigateTo("#orders-view"));
 
     const searchContainer = document.getElementById("main-search-container");
     const searchInput = document.getElementById("search-input");
@@ -64,48 +62,48 @@ export function setupAppListeners() {
     searchInput.removeEventListener("focus", searchInput._focusEventListener);
     let hasHandledBlur = true;
 
+    const showDropdownWithTransition = () => {
+        showSearchHistory(searchDropdown); // populate dropdown
+        setTimeout(() => searchDropdown.classList.add("show"), 200); // Delay adding "show" to trigger the transition smoothly
+    };
+
     searchInput.addEventListener("focus", () => {
         if (!hasHandledBlur) return;
         hasHandledBlur = false;
 
+        const unshown = searchDropdown.classList.contains("unshow");
         searchDropdown.classList.remove("show", "unshow");
-        searchContainer.addEventListener(
-            "transitionend",
-            () => {
-                if (!searchDropdown.classList.contains("show")) {
-                    showSearchHistory(searchDropdown); // populate dropdown
 
-                    // Delay adding "show" to trigger the transition smoothly
-                    setTimeout(() => {
-                        searchDropdown.classList.add("show");
-                    }, 200);
-                }
-            },
-            { once: true }
-        );
+        if (unshown) {
+            showDropdownWithTransition();
+        } else {
+            searchContainer.addEventListener("transitionend", showDropdownWithTransition(), { once: true });
+        }
     });
 
     const handleSearchInputBlur = () => {
         if (!document.hasFocus()) return;
 
+        const alreadyHidden = searchDropdown.classList.contains("unshow");
+        searchDropdown.classList.add("unshow"); // hide dropdown first
+        hasHandledBlur = true;
+
         if (!searchInput.value) {
-            searchDropdown.classList.add("unshow"); // hide dropdown first
+            setTimeout(
+                () => {
+                    searchContainer.classList.remove("active"); // trigger container collapse
 
-            setTimeout(() => {
-                searchContainer.classList.remove("active"); // trigger container collapse
-
-                setTimeout(() => {
-                    searchToggle.style.display = "block"; // show toggle again
-                    hasHandledBlur = true;
-                }, 200);
-            }, 400);
+                    setTimeout(() => {
+                        searchToggle.style.display = "block"; // show toggle again
+                    }, 200);
+                },
+                alreadyHidden ? 0 : 400
+            );
         }
     };
 
-    searchInput.addEventListener("blur", handleSearchInputBlur);
-
     document.addEventListener("click", (e) => {
-        if (!e.target.closest(".search-container")) searchDropdown.classList.remove("show");
+        if (!e.target.closest(".search-container") && !e.target.closest("#nav-search-toggle")) handleSearchInputBlur();
 
         const historyItem = e.target.closest(".history-item");
         const autocompleteItem = e.target.closest(".autocomplete-item");
@@ -116,11 +114,13 @@ export function setupAppListeners() {
             const productId = historyItem.dataset.productId;
 
             if (productId) {
-                navigateTo("product-detail-view", productId);
+                navigateTo(`#product-detail-view?id=${encodeURIComponent(productId)}`);
+                searchInput.value = "";
                 handleSearchInputBlur();
             } else {
+                navigateTo(`#search-results-view?q=${encodeURIComponent(term)}`);
                 searchInput.value = term;
-                navigateTo("search-results-view", term);
+                handleSearchInputBlur();
             }
 
             addSearchToHistory({ term, productId }); // refresh position in history
@@ -135,7 +135,7 @@ export function setupAppListeners() {
             searchInput.value = "";
             handleSearchInputBlur();
             addSearchToHistory({ term, productId });
-            navigateTo("product-detail-view", productId);
+            navigateTo(`#product-detail-view?id=${encodeURIComponent(productId)}`);
         }
     });
 
@@ -157,7 +157,7 @@ export function setupAppListeners() {
     });
 
     document.getElementById("mobile-search-btn").addEventListener("click", () => {
-        navigateTo("search-view");
+        navigateTo("#search-view");
     });
 }
 
@@ -272,8 +272,7 @@ export function checkLoginStatus() {
 function logout() {
     clearCurrentUser();
     S.currentUser = null;
-    S.buyNowItem = null;
     S.appData = { profile: {}, cart: [], orders: [], searchHistory: [] };
     updateNavUI();
-    navigateTo("login-view", null, { skipReturnTo: true });
+    navigateTo("#login-view", { skipReturnTo: true });
 }

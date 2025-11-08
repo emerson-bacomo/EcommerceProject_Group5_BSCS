@@ -1,5 +1,5 @@
 import { navbar } from "../main.js";
-import { getProductById, html } from "../utils/helpers.js";
+import { back, getProductById, html } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { S } from "../state.js";
 import { saveUserData } from "../utils/storage.js";
@@ -35,13 +35,7 @@ export function renderSearchPage(container) {
         </div>
     `;
 
-    document.getElementById("back-btn").addEventListener("click", () => {
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            navigateTo("home-view");
-        }
-    });
+    document.getElementById("back-btn").addEventListener("click", back);
 
     setupSearchEventListeners(container);
     showSearchHistory(container.querySelector("#search-results-dropdown"));
@@ -51,6 +45,7 @@ export function renderSearchPage(container) {
 
 export function setupSearchEventListeners(container) {
     const searchInput = container.querySelector("#search-input");
+    searchInput.focus();
     const searchForm = container.querySelector("#search-form");
     const searchDropdown = container.querySelector("#search-results-dropdown");
 
@@ -68,7 +63,7 @@ export function setupSearchEventListeners(container) {
         if (query) {
             addSearchToHistory(query);
             searchInput.value = query;
-            navigateTo("search-results-view", query);
+            navigateTo(`#search-results-view?q=${encodeURIComponent(query)}`);
             searchDropdown?.classList.remove("show");
         }
     });
@@ -131,6 +126,8 @@ export function showSearchHistory(searchDropdown) {
                 `;
             })
             .join("");
+
+        document.querySelectorAll(".history-item").forEach((item) => item.addEventListener("click", () => console.log("item")));
     }
 }
 

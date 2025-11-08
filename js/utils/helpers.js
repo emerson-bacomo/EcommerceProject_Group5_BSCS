@@ -1,6 +1,7 @@
 import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { products } from "../config/products.js";
 import { S } from "../state.js";
+import { navigateTo } from "./navigation.js";
 
 export const html = (strings, ...values) => strings.reduce((result, string, i) => result + string + (values[i] ?? ""), "");
 
@@ -74,4 +75,42 @@ export function styleString(...args) {
         .join("; ");
 
     return res;
+}
+export function back() {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        navigateTo("#home-view");
+    }
+}
+/**
+ * Returns an object of all URL hash parameters, decoded and JSON-parsed if possible.
+ * Example: #view?id=123&buyNow=%7B%22id%22%3A1%2C%22qty%22%3A2%7D
+ * Returns: { id: "123", buyNow: { id: 1, qty: 2 } }
+ */
+export function getHashParams() {
+    const hash = window.location.hash || "";
+    const queryPart = hash.split("?")[1]; // get part after "?"
+    const params = {};
+
+    if (queryPart) {
+        const searchParams = new URLSearchParams(queryPart);
+        for (const [key, value] of searchParams.entries()) {
+            let decoded;
+            try {
+                decoded = decodeURIComponent(value);
+            } catch {
+                decoded = value;
+            }
+
+            // Try to parse JSON
+            try {
+                params[key] = JSON.parse(decoded);
+            } catch {
+                params[key] = decoded;
+            }
+        }
+    }
+
+    return params;
 }

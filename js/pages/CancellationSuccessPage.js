@@ -1,11 +1,13 @@
 import { showToast } from "../components/Toast.js";
 import { S } from "../state.js";
-import { getProductById, html } from "../utils/helpers.js";
+import { getHashParams, getProductById, html } from "../utils/helpers.js";
 import { formatCurrency } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
 
-export function renderCancellationSuccessPage(container, orderId) {
+export function renderCancellationSuccessPage(container) {
+    const orderId = getHashParams().id;
+
     const order = S.appData.orders.find((o) => o.id === orderId);
     if (!order) {
         container.innerHTML = html`
@@ -71,13 +73,14 @@ export function renderCancellationSuccessPage(container, orderId) {
             order.status = "Processing";
             saveUserData(S.currentUser, S.appData);
             showToast("Order cancellation has been undone.", "success");
-            navigateTo("order-detail-view", orderId);
+            navigateTo(`#order-detail-view?id=${encodeURIComponent(orderId)}`);
         }
     });
 
     container.querySelector("#re-add-to-cart-btn").addEventListener("click", () => {
         order.items.forEach((item) => {
             S.appData.cart.push({
+                cartId: Date.now(),
                 id: item.id,
                 quantity: item.quantity,
                 selected: true,
@@ -88,6 +91,6 @@ export function renderCancellationSuccessPage(container, orderId) {
         });
         saveUserData(S.currentUser, S.appData);
         showToast(`${order.items.length} item(s) have been added back to your cart.`, "success");
-        navigateTo("cart-view");
+        navigateTo("#cart-view");
     });
 }

@@ -1,5 +1,5 @@
 import { S } from "../state.js";
-import { html, getAddressById } from "../utils/helpers.js";
+import { html, getAddressById, back } from "../utils/helpers.js";
 import { saveUserData } from "../utils/storage.js";
 import { navigateTo } from "../utils/navigation.js";
 import { showConfirmationModal } from "../components/Toast.js";
@@ -7,7 +7,6 @@ import { showConfirmationModal } from "../components/Toast.js";
 export function renderAddressDetailsPage(container) {
     const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
     const id = parseInt(params.get("id"));
-    const fromCheckout = params.get("fromCheckout") === "true";
 
     container.innerHTML = html`
         <div class="d-flex align-items-center mb-5 gap-3">
@@ -67,7 +66,7 @@ export function renderAddressDetailsPage(container) {
                 saveUserData(S.currentUser, S.appData);
             }
 
-            navigateTo("address-management-view");
+            navigateTo("#address-management-view");
         });
 
         document.getElementById("delete-address-btn").addEventListener("click", async () => {
@@ -81,12 +80,9 @@ export function renderAddressDetailsPage(container) {
 
             S.appData.profile.addresses = (S.appData.profile.addresses || []).filter((a) => a.id !== id);
             saveUserData(S.currentUser, S.appData);
-            navigateTo("address-management-view");
+            navigateTo("#address-management-view");
         });
     }
 
-    document.getElementById("back-btn").addEventListener("click", () => {
-        if (fromCheckout) navigateTo("checkout-view");
-        else navigateTo("address-management-view");
-    });
+    document.getElementById("back-btn").addEventListener("click", back);
 }

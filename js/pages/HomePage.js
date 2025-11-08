@@ -399,7 +399,7 @@ export function renderHomePage(container) {
 
         const productId = btn.dataset.productId;
         if (productId) {
-            navigateTo("product-detail-view", productId);
+            navigateTo(`#product-detail-view?id=${encodeURIComponent(productId)}`);
         }
     });
 

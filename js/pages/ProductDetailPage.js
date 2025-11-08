@@ -1,4 +1,4 @@
-import { getStarRatingHTML, html, getPriceRange, formatCurrency, getProductById } from "../utils/helpers.js";
+import { getStarRatingHTML, html, getPriceRange, formatCurrency, getProductById, getHashParams } from "../utils/helpers.js";
 import { setupImageViewer } from "../components/ImageViewer.js";
 import { showToast } from "../components/Toast.js";
 import { navigateTo } from "../utils/navigation.js";
@@ -6,18 +6,12 @@ import { S } from "../state.js";
 import { findCartItem, findCartItemByKey } from "./CartPage.js";
 import { saveUserData } from "../utils/storage.js";
 
-export function renderProductDetailPage(container, params) {
-    let productId;
-    let cartKey = null;
-    if (typeof params === "object" && params !== null) {
-        productId = params.productId;
-        cartKey = params.cartKey;
-    } else {
-        productId = params;
-    }
+export function renderProductDetailPage(container) {
+    const { id: productId, cartKey } = getHashParams();
+
     const product = getProductById(productId);
     if (!product) {
-        container.innerHTML = `<p class="text-center">Product not found.</p>`;
+        container.innerHTML = html`<p class="text-center">Product not found.</p>`;
         return;
     }
     S.currentProductDetailState = {
@@ -391,8 +385,11 @@ export function renderProductDetailPage(container, params) {
             return;
         }
         errorDiv.classList.add("hidden");
-        S.buyNowItem = { id: productId, color: selectedColor, size: selectedSize, price, quantity };
-        navigateTo("checkout-view", { buyNow: true, item: S.buyNowItem });
+        navigateTo(
+            `#checkout-view?buyNow=${encodeURIComponent(
+                JSON.stringify({ id: productId, color: selectedColor, size: selectedSize, price, quantity })
+            )}`
+        );
     });
 
     document.querySelector("#add-to-cart-btn").addEventListener("click", () => {

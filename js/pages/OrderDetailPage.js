@@ -1,10 +1,13 @@
 import { showConfirmationModal, showToast } from "../components/Toast.js";
+import { statusColors } from "../config/general.js";
 import { S } from "../state.js";
-import { classNames, formatCurrency, getProductById, html, isMobile } from "../utils/helpers.js";
+import { classNames, formatCurrency, getHashParams, getProductById, html, isMobile } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
 
-export function renderOrderDetailPage(container, orderId) {
+export function renderOrderDetailPage(container) {
+    const orderId = getHashParams().id;
+
     const order = (S.appData.orders || []).find((o) => o.id === orderId);
     if (!order) {
         container.innerHTML = html`
@@ -63,7 +66,7 @@ export function renderOrderDetailPage(container, orderId) {
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">
-                            Order Status: <span class="text-primary text-capitalize">${order.status}</span>
+                            Order Status: <span class="${statusColors[order.status]} text-capitalize">${order.status}</span>
                         </h5>
                     </div>
                 </div>
@@ -105,31 +108,61 @@ export function renderOrderDetailPage(container, orderId) {
         </div>
         <div class="row"><div class="col-12 mt-4" id="order-actions-container"></div></div>
     `;
-    if (order.status === "Processing") {
+    if (order.status === "Processing" || order.status === "Cancelled") {
         const actionsContainer = container.querySelector("#order-actions-container");
         actionsContainer.innerHTML = html`
             <div class="card">
                 <div class="card-body d-flex justify-content-between align-items-center">
-                    <span>Want to change something?</span
-                    ><button class="btn btn-outline-danger" id="cancel-order-btn">Cancel Order</button>
+                    ${order.status === "Processing"
+                        ? html`<span>Want to change something?</span>
+                              <button class="btn btn-outline-danger" id="cancel-order-btn">Cancel Order</button>`
+                        : html`<span>Order was cancelled.</span>
+                              <div class="d-flex gap-2">
+                                  <button class="btn btn-secondary" id="undo-cancellation-btn">Undo Cancellation</button>
+                                  <button class="btn btn-primary" id="re-add-to-cart-btn">Re-add Items to Cart</button>
+                              </div>`}
                 </div>
             </div>
         `;
 
-        actionsContainer.querySelector("#cancel-order-btn").addEventListener("click", async () => {
-            const confirmed = await showConfirmationModal(
-                "Are you sure you want to cancel this order?",
-                "Cancel Order",
-                "Yes, Cancel",
-                "btn-danger"
-            );
-            if (confirmed) {
-                if (order.status === "Processing") {
+        if (order.status === "Processing") {
+            actionsContainer.querySelector("#cancel-order-btn").addEventListener("click", async () => {
+                const confirmed = await showConfirmationModal(
+                    "Are you sure you want to cancel this order?",
+                    "Cancel Order",
+                    "Yes, Cancel",
+                    "btn-danger"
+                );
+                if (confirmed) {
                     order.status = "Cancelled";
                     saveUserData(S.currentUser, S.appData);
-                    navigateTo("cancellation-success-view", orderId);
-                } else showToast("This order can no longer be cancelled.", "danger");
-            }
-        });
+                    navigateTo(`#cancellation-success-view?id=${encodeURIComponent(order.id)}`);
+                }
+            });
+        } else if (order.status === "Cancelled") {
+            actionsContainer.querySelector("#undo-cancellation-btn").addEventListener("click", () => {
+                order.status = "Processing";
+                saveUserData(S.currentUser, S.appData);
+                showToast("Order cancellation has been undone.", "success");
+                navigateTo(`#order-detail-view?id=${encodeURIComponent(order.id)}`);
+            });
+
+            actionsContainer.querySelector("#re-add-to-cart-btn").addEventListener("click", () => {
+                order.items.forEach((item) => {
+                    S.appData.cart.push({
+                        cartId: Date.now(),
+                        id: item.id,
+                        quantity: item.quantity,
+                        selected: true,
+                        color: item.color,
+                        size: item.size,
+                        price: item.price,
+                    });
+                });
+                saveUserData(S.currentUser, S.appData);
+                showToast(`${order.items.length} item(s) have been added back to your cart.`, "success");
+                navigateTo("#cart-view");
+            });
+        }
     }
 }

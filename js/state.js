@@ -7,7 +7,6 @@ export const S = {
     promptLoginModal: null,
     confirmModal: null,
     confirmModalResolver: null,
-    buyNowItem: null,
     currentProductDetailState: {
         productId: null,
         selectedColor: null,

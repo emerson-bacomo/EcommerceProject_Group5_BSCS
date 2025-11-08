@@ -1,8 +1,10 @@
 import { createProductCard } from "../components/ProductCard.js";
 import { products } from "../config/products.js";
-import { html } from "../utils/helpers.js";
+import { getHashParams, html } from "../utils/helpers.js";
 
-export function renderSearchResultsPage(container, query) {
+export function renderSearchResultsPage(container) {
+    const query = getHashParams().q;
+
     const results = products.filter((p) => p.name.toLowerCase().includes((query || "").toLowerCase()));
     container.innerHTML = html`
         <h1 class="mb-4">Search Results for "<span class="text-primary">${query}</span>"</h1>

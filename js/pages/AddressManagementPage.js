@@ -219,7 +219,7 @@ export function renderAddressManagementPage(container) {
             item.addEventListener("click", () => {
                 const id = item.dataset.id;
                 S.appData.selectedAddressId = id;
-                navigateTo(`address-details-view?id=${id}&fromCheckout=${fromCheckout}`);
+                navigateTo(`#address-details-view?id=${id}&fromCheckout=${fromCheckout}`);
             });
         });
     }

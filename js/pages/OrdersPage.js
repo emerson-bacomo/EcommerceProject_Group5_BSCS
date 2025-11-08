@@ -1,6 +1,7 @@
 import { formatCurrency, html, getProductById } from "../utils/helpers.js";
 import { S } from "../state.js";
 import { navigateTo } from "../utils/navigation.js";
+import { statusColors } from "../config/general.js";
 
 export function renderOrdersPage(container) {
     container.innerHTML = html`
@@ -50,16 +51,16 @@ export function renderOrdersPage(container) {
             <div class="tab-pane fade" id="cancelled" role="tabpanel"></div>
         </div>
     `;
-    ["processing", "to ship", "shipping", "received", "cancelled"].forEach((status) => renderOrdersByStatus(status, container));
+    ["Processing", "To Ship", "Shipping", "Received", "Cancelled"].forEach((status) => renderOrdersByStatus(status, container));
 
     document.querySelectorAll(".order-list-card").forEach((card) => {
-        card.addEventListener("click", () => navigateTo("order-detail-view", card.dataset.orderId));
+        card.addEventListener("click", () => navigateTo(`#order-detail-view?id=${encodeURIComponent(card.dataset.orderId)}`));
     });
 }
 
 function renderOrdersByStatus(status, container) {
-    const targetId = `#${status.replace(" ", "-")}`;
-    const filteredOrders = S.appData.orders.filter((o) => o.status.toLowerCase() === status);
+    const targetId = `#${status.replace(" ", "-").toLowerCase()}`;
+    const filteredOrders = S.appData.orders.filter((o) => o.status === status);
     const targetEl = container.querySelector(targetId);
     if (!targetEl) return;
     if (filteredOrders.length === 0) {
@@ -67,13 +68,6 @@ function renderOrdersByStatus(status, container) {
         return;
     }
 
-    const statusColors = {
-        processing: "text-primary",
-        "to ship": "text-info",
-        shipping: "text-warning",
-        received: "text-success",
-        cancelled: "text-danger",
-    };
     const statusColorClass = statusColors[status] || "text-muted";
 
     targetEl.innerHTML = filteredOrders

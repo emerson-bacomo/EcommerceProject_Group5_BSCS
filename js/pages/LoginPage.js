@@ -67,12 +67,6 @@ export function renderLoginPage(container) {
         initApp(user);
         mergeGuestSearchHistory();
 
-        const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
-        const returnTo = urlParams.get("returnTo");
-        if (returnTo) {
-            window.location.hash = decodeURIComponent(returnTo);
-        } else {
-            navigateTo("home-view");
-        }
+        navigateTo("#home-view", { return: true });
     });
 }

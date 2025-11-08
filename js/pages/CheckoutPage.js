@@ -1,36 +1,36 @@
 import { showToast } from "../components/Toast.js";
 import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { S } from "../state.js";
-import { getProductById, formatCurrency, html, styleString, isMobile, classNames } from "../utils/helpers.js";
+import { getProductById, formatCurrency, html, styleString, isMobile, classNames, getHashParams } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
 
-export function renderCheckoutPage(container, buyNowItemData = null) {
+export function renderCheckoutPage(container) {
+    const buyNowItemData = getHashParams().buyNow;
+
     let itemsToCheckout;
     let isBuyNow = false;
     if (buyNowItemData) {
         const product = getProductById(buyNowItemData.id);
         if (!product) {
             container.innerHTML = html` <div class="alert alert-danger">Error: Product not found for Buy Now.</div> `;
-            S.buyNowItem = null;
             return;
         }
         itemsToCheckout = [{ ...buyNowItemData, product }];
         isBuyNow = true;
-        S.buyNowItem = buyNowItemData;
     } else {
         itemsToCheckout = S.appData.cart
             .filter((item) => item.selected)
             .map((item) => ({ ...item, product: getProductById(item.id) }));
-        S.buyNowItem = null;
     }
     if (itemsToCheckout.length === 0) {
         container.innerHTML = html`
             <div class="alert alert-warning">
                 No items to checkout.
-                <a href="#" data-page="${isBuyNow ? "home-view" : "cart-view"}" class="alert-link"
-                    >Back to ${isBuyNow ? "Shop" : "Cart"}</a
-                >.
+                <a href="#" data-page="${isBuyNow ? "home-view" : "cart-view"}" class="alert-link">
+                    Back to ${isBuyNow ? "Shop" : "Cart"}
+                </a>
+                .
             </div>
         `;
         return;
@@ -181,36 +181,22 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
     `;
 
     document.querySelector("#place-order-btn").addEventListener("click", () => {
-        let itemsToOrder;
-        let isBuyNowOrder = false;
-        if (S.buyNowItem && S.buyNowItem.id && S.buyNowItem.quantity) {
-            itemsToOrder = [S.buyNowItem];
-            isBuyNowOrder = true;
-        } else {
-            itemsToOrder = (S.appData.cart || []).filter((item) => item.selected);
-        }
         const selectedAddressInput = document.querySelector('input[name="shippingAddress"]:checked');
         const selectedPaymentInput = document.querySelector('input[name="paymentMethod"]:checked');
-        if (!selectedAddressInput) {
-            showToast("Please select a shipping address.", "danger");
-            return;
-        }
-        if (!selectedPaymentInput) {
-            showToast("Please select a payment method.", "danger");
-            return;
-        }
-        if (itemsToOrder.length === 0) {
-            showToast("No items selected for order.", "danger");
-            return;
-        }
+
+        if (!selectedAddressInput) return showToast("Please select a shipping address.", "danger");
+        if (!selectedPaymentInput) return showToast("Please select a payment method.", "danger");
+        if (itemsToCheckout.length === 0) return showToast("No items selected for order.", "danger");
+
         const shippingAddress = S.appData.profile.addresses[selectedAddressInput.value];
         const shippingFee = 0.0;
         const paymentMethod = selectedPaymentInput.value;
-        const total = itemsToOrder.reduce((sum, i) => sum + i.price * i.quantity, 0) + shippingFee;
+        const total = itemsToCheckout.reduce((sum, i) => sum + i.price * i.quantity, 0) + shippingFee;
+
         const newOrder = {
             id: `ORD-${Date.now()}`,
             date: new Date().toISOString(),
-            items: itemsToOrder.map((it) => ({
+            items: itemsToCheckout.map((it) => ({
                 id: it.id,
                 quantity: it.quantity,
                 color: it.color,
@@ -224,8 +210,8 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
             status: "Processing",
         };
         S.appData.orders = [newOrder, ...(S.appData.orders || [])];
-        if (!isBuyNowOrder) S.appData.cart = (S.appData.cart || []).filter((item) => !item.selected);
-        S.buyNowItem = null;
+        if (!isBuyNow) S.appData.cart = (S.appData.cart || []).filter((item) => !item.selected);
+
         saveUserData(S.currentUser, S.appData);
 
         // eslint-disable-next-line no-undef
@@ -234,7 +220,7 @@ export function renderCheckoutPage(container, buyNowItemData = null) {
         document.getElementById("orderSuccessModal").addEventListener(
             "hidden.bs.modal",
             () => {
-                if (!window.location.hash.includes("orders-view")) navigateTo("home-view");
+                if (!window.location.hash.includes("orders-view")) navigateTo("#home-view");
             },
             { once: true }
         );
