@@ -87,6 +87,6 @@ export function renderSettingsPage(container) {
         }
 
         showToast("Password updated successfully.", "success");
-        form.reset();
+        renderSettingsPage(container);
     });
 }
