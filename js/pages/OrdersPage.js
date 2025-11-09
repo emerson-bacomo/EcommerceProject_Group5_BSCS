@@ -137,7 +137,6 @@ export function renderOrdersPage(container) {
     // Open default tab based on hash
     if (defaultTab !== "processing") {
         const defaultTabEl = container.querySelector(`#orders-tabs .nav-link[data-bs-target="#${defaultTab}"]`);
-        console.log(defaultTabEl);
         if (defaultTabEl) defaultTabEl.click();
     }
 
@@ -147,7 +146,6 @@ export function renderOrdersPage(container) {
     });
 
     return () => {
-        console.log("cleaned");
         resizeObserver.disconnect();
     };
 }

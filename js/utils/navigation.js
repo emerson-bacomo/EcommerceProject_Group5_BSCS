@@ -99,7 +99,6 @@ export function handleInitialNavigation() {
         } else if (S.protectedViews.includes(pageKey) && !S.currentUser) {
             navigateTo("#login-view");
         } else {
-            console.log(hash);
             navigateTo(hash, { preserveScroll: true });
         }
     } else {

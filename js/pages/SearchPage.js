@@ -126,8 +126,6 @@ export function showSearchHistory(searchDropdown) {
                 `;
             })
             .join("");
-
-        document.querySelectorAll(".history-item").forEach((item) => item.addEventListener("click", () => console.log("item")));
     }
 }
 
