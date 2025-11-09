@@ -353,23 +353,35 @@ export class ImageViewer extends HTMLElement {
             });
         });
 
-        const closeBtn = overlay.querySelector(".f-button.close");
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") closeOverlay();
+        };
+        document.addEventListener("keydown", handleKeyDown);
+
+        const handlePopState = () => {
+            if (this.overlayOpen) closeOverlay();
+        };
+
+        // Add new history entry so that click the back button on mobile would just close the overlay instead of navigating back
+        history.pushState({ overlayOpen: true }, "");
+        window.addEventListener("popstate", handlePopState);
 
         const closeOverlay = () => {
             if (!this.overlayOpen) return;
+
             this.overlayOpen = false;
             fsCarouselInstance.dispose();
             overlay.remove();
             document.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("popstate", handlePopState);
             this.focus();
+
+            if (history.state && history.state.overlayOpen) {
+                history.back();
+            }
         };
 
-        const handleKeyDown = (e) => {
-            if (e.key === "Escape") closeOverlay();
-        };
-
-        closeBtn.addEventListener("click", closeOverlay);
-        document.addEventListener("keydown", handleKeyDown);
+        overlay.querySelector(".f-button.close").addEventListener("click", closeOverlay);
     }
 }
 
