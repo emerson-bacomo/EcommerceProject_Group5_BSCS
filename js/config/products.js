@@ -8,15 +8,6 @@ export const products = [
         rating: 4.8,
         soldAmount: 152,
         images: ["assets/products/Nike Vomero Plus(Angle1).jpg", "assets/products/Nike Vomero Plus(Angle2).avif"],
-        banner: html`
-            <div class="banner-slide" style="background-image: url('assets/banners/53-best-running-shoes-15275001-main.webp');">
-                <div class="banner-content">
-                    <h1>New Stylish Running Shoes</h1>
-                    <p>Experience unmatched comfort and style. Perfect for your daily runs.</p>
-                    <button class="btn btn-primary btn-lg banner-buy-now-btn" data-product-id="1">Shop Now</button>
-                </div>
-            </div>
-        `,
         variations: {
             color: {
                 Black: {
@@ -40,6 +31,41 @@ export const products = [
     },
     {
         id: 2,
+        name: "Air Jordan 1 Retro High OG 'Black and Gold'",
+        description: "Stylish Shoes.",
+        rating: 5.0,
+        soldAmount: 125,
+        images: [
+            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE1).jpeg",
+            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE2).jpeg",
+        ],
+        banner: html`
+            <div
+                class="banner-slide"
+                style="background-image: url('assets/banners/https___hypebeast.com_image_2017_11_air-jordan-retro-1-high-top-3-og-energy-hypebeast-2.avif');"
+            >
+                <div class="banner-content">
+                    <h1>New Stylish Shoes</h1>
+                    <p>Step up your style with the latest Air Jordans – premium design for sneaker enthusiasts.</p>
+                    <button class="btn btn-primary btn-lg banner-buy-now-btn" data-product-id="2">Shop Now</button>
+                </div>
+            </div>
+        `,
+        variations: {
+            color: {
+                Gold: {
+                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(GOLD).jpeg",
+                    sizes: { "EU 39 / US 6": 7199.0, "EU 40 / US 7": 7199.0, "EU 41 / US 8": 7299.0, "EU 42 / US 9": 7599.0 },
+                },
+                Orange: {
+                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ORANGE).jpeg",
+                    sizes: { "EU 40 / US 7": 7199.0, "EU 41 / US 8": 7299.0, "EU 42 / US 9": 7599.0 },
+                },
+            },
+        },
+    },
+    {
+        id: 3,
         name: "Nike SB Zoom Janoski OG",
         description: "Skate Shoes.",
         rating: 4.9,
@@ -49,11 +75,14 @@ export const products = [
             "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(ANGLE2).jpeg",
         ],
         banner: html`
-            <div class="banner-slide" style="background-image: url('assets/banners/Nike-2.png');">
+            <div
+                class="banner-slide"
+                style="background-image: url('assets/banners/nike-zoom-stefan-janoski-black-sail-333284-015-footwear _ sneaker-manufacturers-6.jpg');"
+            >
                 <div class="banner-content">
                     <h1>Go Out With Style</h1>
                     <p>Browse stylish shoes just for you!</p>
-                    <button class="btn btn-primary btn-lg banner-buy-now-btn" data-product-id="2">Shop Now</button>
+                    <button class="btn btn-primary btn-lg banner-buy-now-btn" data-product-id="3">Shop Now</button>
                 </div>
             </div>
         `,
@@ -70,29 +99,6 @@ export const products = [
                 White: {
                     image: "assets/products/NIKE+SB+ZOOM+JANOSKI+OG+(WHITE).jpg",
                     sizes: { "EU 38 / US 5": 4599.0, "EU 39 / US 6": 4599.0, "EU 40 / US 7": 4599.0 },
-                },
-            },
-        },
-    },
-    {
-        id: 3,
-        name: "Air Jordan 1 Retro High OG 'Black and Gold'",
-        description: "Stylish Shoes.",
-        rating: 5.0,
-        soldAmount: 125,
-        images: [
-            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE1).jpeg",
-            "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ANGLE2).jpeg",
-        ],
-        variations: {
-            color: {
-                Gold: {
-                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(GOLD).jpeg",
-                    sizes: { "EU 39 / US 6": 7199.0, "EU 40 / US 7": 7199.0, "EU 41 / US 8": 7299.0, "EU 42 / US 9": 7599.0 },
-                },
-                Orange: {
-                    image: "assets/products/AIR+JORDAN+1+RETRO+HIGH+OG(ORANGE).jpeg",
-                    sizes: { "EU 40 / US 7": 7199.0, "EU 41 / US 8": 7299.0, "EU 42 / US 9": 7599.0 },
                 },
             },
         },

@@ -12,6 +12,8 @@ import { mobileMaxWidthPlus1 } from "../config/general.js";
 
 export function renderHomePage(container) {
     const bannerProducts = products.filter((p) => p.banner);
+    const storedIndex = parseInt(sessionStorage.getItem("homeBannerIndex")) || 0;
+
     const bannerHTML =
         bannerProducts.length > 0
             ? html`
@@ -56,6 +58,7 @@ export function renderHomePage(container) {
                       }
                       .banner-content p {
                           font-size: 1.25rem;
+                          max-width: 36rem;
                           text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
                       }
 
@@ -189,7 +192,9 @@ export function renderHomePage(container) {
                           ${bannerProducts
                               .map(
                                   (product, index) =>
-                                      html`<div class="carousel-item ${index === 0 ? "active" : ""}">${product.banner}</div>`
+                                      html`<div class="carousel-item ${index === storedIndex ? "active" : ""}">
+                                          ${product.banner}
+                                      </div>`
                               )
                               .join("")}
                       </div>
@@ -327,10 +332,11 @@ export function renderHomePage(container) {
 
         let isSliding = false; // Prevent slide event startProgress() and touchend event resumeProgress() (happens after) from colliding
         startProgress(); // Initial start
-        slideNumberEl.textContent = `1 / ${totalSlides}`;
+        slideNumberEl.textContent = `${storedIndex + 1} / ${totalSlides}`;
 
         bannerCarouselEl.addEventListener("slide.bs.carousel", (event) => {
             slideNumberEl.textContent = `${event.to + 1} / ${totalSlides}`;
+            sessionStorage.setItem("homeBannerIndex", event.to);
             startProgress();
             isSliding = true;
         });
