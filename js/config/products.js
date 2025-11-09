@@ -4,7 +4,8 @@ export const products = [
     {
         id: 1,
         name: "Nike Vomero Plus",
-        description: "Lightweight and breathable running shoes with excellent cushioning. Perfect for daily runs.",
+        description:
+            "Experience unmatched comfort and performance with the Nike Vomero Plus. Lightweight, breathable, and cushioned for your daily runs.",
         rating: 4.8,
         soldAmount: 152,
         images: ["assets/products/Nike Vomero Plus(Angle1).jpg", "assets/products/Nike Vomero Plus(Angle2).avif"],
@@ -32,7 +33,8 @@ export const products = [
     {
         id: 2,
         name: "Air Jordan 1 Retro High OG 'Black and Gold'",
-        description: "Stylish Shoes.",
+        description:
+            "Elevate your sneaker game with the iconic Air Jordan 1 Retro High OG, blending timeless style with premium craftsmanship.",
         rating: 5.0,
         soldAmount: 125,
         images: [
@@ -67,7 +69,8 @@ export const products = [
     {
         id: 3,
         name: "Nike SB Zoom Janoski OG",
-        description: "Skate Shoes.",
+        description:
+            "Skate in style with the Nike SB Zoom Janoski OG, featuring superior grip and a sleek, classic silhouette for all-day comfort.",
         rating: 4.9,
         soldAmount: 124,
         images: [
@@ -106,7 +109,8 @@ export const products = [
     {
         id: 4,
         name: "Nike Winflo 10",
-        description: "Stylish Shoes.",
+        description:
+            "Boost your running experience with Nike Winflo 10. Lightweight, breathable, and designed for smooth, stable strides.",
         rating: 4.0,
         soldAmount: 411,
         images: ["assets/products/AIR+WINFLO+10(ANGLE1).jpeg", "assets/products/AIR+WINFLO+10(ANGLE2).jpeg"],
@@ -130,7 +134,8 @@ export const products = [
     {
         id: 5,
         name: "Velvet Brown and Safety Orange",
-        description: "Women's LD-1000",
+        description:
+            "Step out in elegance with the women's LD-1000, featuring a luxurious velvet brown and vibrant safety orange design.",
         rating: 5.0,
         soldAmount: 132,
         images: [
@@ -149,7 +154,8 @@ export const products = [
     {
         id: 6,
         name: "Nike React SFB Carbon",
-        description: "Men's Elite Outdoor Shoes",
+        description:
+            "Conquer any terrain with Nike React SFB Carbon. Rugged outdoor shoes designed for stability, comfort, and long-lasting performance.",
         rating: 3.9,
         soldAmount: 231,
         images: ["assets/products/NIKE+REACT+SFB+CARBON(ANGLE1).jpeg", "assets/products/NIKE+REACT+SFB+CARBON(ANGLE2).jpeg"],
@@ -175,7 +181,8 @@ export const products = [
     {
         id: 7,
         name: "LeBron TR 1",
-        description: "Men's Workout Shoes",
+        description:
+            "Train like a pro with LeBron TR 1. Engineered for intense workouts, offering superior support, cushioning, and style.",
         rating: 5.0,
         soldAmount: 245,
         images: ["assets/products/LEBRON+TR+1(ANGLE1).jpeg", "assets/products/LEBRON+TR+1(ANGLE2).jpeg"],
@@ -209,7 +216,8 @@ export const products = [
     {
         id: 8,
         name: "VL Court 3.0 Shoes",
-        description: "Men's Sportswear",
+        description:
+            "Play hard with VL Court 3.0 Shoes. Durable, comfortable, and stylish sneakers designed for everyday sports and leisure.",
         rating: 4.5,
         soldAmount: 245,
         images: [
@@ -246,7 +254,8 @@ export const products = [
     {
         id: 9,
         name: "Run Star Hike Canvas Platform Shoes - Black",
-        description: "A fashion-forward reimagination of classic Chucks",
+        description:
+            "Step up your fashion game with Run Star Hike Canvas Platform Shoes, a bold reimagination of classic Chucks.",
         rating: 3.9,
         soldAmount: 153,
         images: [
@@ -272,7 +281,8 @@ export const products = [
     {
         id: 10,
         name: "Nike SB PS8",
-        description: "Men's Shoes",
+        description:
+            "Nike SB PS8 delivers classic skate style and superior comfort, built for both performance and everyday wear.",
         rating: 4.4,
         soldAmount: 245,
         images: ["assets/products/NIKE+SB+PS8(ANGLE1).jpg", "assets/products/NIKE+SB+PS8(ANGLE2).jpg"],
@@ -306,7 +316,8 @@ export const products = [
     {
         id: 11,
         name: "Nike Run Defy",
-        description: "Women's Road Running Shoes",
+        description:
+            "Women's Road Running Shoes designed for comfort and performance. Lightweight, cushioned, and perfect for daily runs.",
         rating: 4.9,
         soldAmount: 245,
         images: ["assets/products/W+NIKE+RUN+DEFY(ANGLE1).jpg", "assets/products/W+NIKE+RUN+DEFY(ANGLE2).jpg"],
@@ -351,7 +362,8 @@ export const products = [
     {
         id: 12,
         name: "Softride Enzo 5 Metallic Running Shoes Women",
-        description: "Unleash your bold side with the new Softride Enzo 5, made specifically for women",
+        description:
+            "Bold, stylish, and designed for women, Softride Enzo 5 ensures maximum comfort with a metallic finish for standout performance.",
         rating: 4.5,
         soldAmount: 245,
         images: [
@@ -399,7 +411,7 @@ export const products = [
     {
         id: 13,
         name: "Roma 24 Sneakers Unisex",
-        description: "Unleash your bold side with the new Softride Enzo 5, made specifically for women",
+        description: "Unisex sneakers offering timeless style and comfort. Perfect for everyday wear or a casual outing.",
         rating: 4.8,
         soldAmount: 245,
         images: ["assets/products/Roma-24-Sneakers-Unisex(ANGLE1).jpg", "assets/products/Roma-24-Sneakers-Unisex(ANGLE2).jpg"],
@@ -433,7 +445,7 @@ export const products = [
     {
         id: 14,
         name: "Pulsar Wedge Monogram Women",
-        description: "Feel the power. Inspired by hip hop legends from the early 2000's",
+        description: "Inspired by early 2000's hip hop style, these wedge sneakers combine iconic looks with everyday comfort.",
         rating: 4.9,
         soldAmount: 245,
         images: [
@@ -460,7 +472,7 @@ export const products = [
         id: 15,
         name: "Porsche Legacy Palermo Pinstripe Sneakers",
         description:
-            "Step into the past with a modern twist. Featuring a nylon base, premium suede overlays, and a leather Formstrip",
+            "Retro style meets modern design with premium materials. Sleek leather, suede overlays, and a nylon base for timeless sophistication.",
         rating: 5.0,
         soldAmount: 245,
         images: [
@@ -497,8 +509,7 @@ export const products = [
     {
         id: 16,
         name: "Mayze Sneakers Women",
-        description:
-            "Elevate your street style with the Mayze platform sneakers. These trendy platform sneakers offer a bold and stylish look",
+        description: "Platform sneakers that elevate your street style. Bold, stylish, and perfect for making a statement.",
         rating: 3.9,
         soldAmount: 245,
         images: ["assets/products/Mayze-Sneakers-Women(ANGLE1).jpg", "assets/products/Mayze-Sneakers-Women(ANGLE2).jpg"],
@@ -543,7 +554,7 @@ export const products = [
     {
         id: 17,
         name: "Omega Trainer",
-        description: "Converse Omega Trainer Unisex Sneakers - Yeti Blue/Slacker",
+        description: "Converse Omega Trainer sneakers combine classic design with modern comfort. Perfect for unisex daily wear.",
         rating: 4.8,
         soldAmount: 245,
         images: [
@@ -581,7 +592,7 @@ export const products = [
         id: 18,
         name: "SOFTRIDE Harli Slip-On Running Shoes Women",
         description:
-            "Effortless style meets comfort with these slip-on shoes. Featuring SOFTRIDE cushioning, our SOFTFOAM+ sockliner, and zoned traction",
+            "Slip-on style meets premium comfort with SOFTRIDE Harli. Cushioned, lightweight, and perfect for everyday wear.",
         rating: 5.0,
         soldAmount: 245,
         images: [
@@ -619,7 +630,7 @@ export const products = [
         id: 19,
         name: "Scuderia Ferrari Palermo Sneakers Unisex",
         description:
-            "The PUMA and Scuderia Ferrari collection is a tribute to motorsport excellence and Ferrari's legendary racing heritage.",
+            "Tribute to Ferrari’s racing heritage, combining motorsport-inspired design with comfort and durability for everyday wear.",
         rating: 5.0,
         soldAmount: 245,
         images: [
@@ -644,8 +655,7 @@ export const products = [
     {
         id: 20,
         name: "ForeverRun NITRO™ Women's Running Shoes",
-        description:
-            "The ForeverRun NITRO™ dawns a new era of support and guidance for all runners, providing the softness of a full NITRO™ midsole without compromising stability.",
+        description: "The ForeverRun NITRO™ provides cushioned support, stability, and comfort for all-day running performance.",
         rating: 5.0,
         soldAmount: 245,
         images: [
