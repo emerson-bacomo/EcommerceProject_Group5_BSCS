@@ -11,7 +11,6 @@ export const S = {
         productId: null,
         selectedColor: null,
         selectedSize: null,
-        currentImageIndex: 0,
         totalImages: 0,
         colorImageMap: {},
         currentQuantity: 1,

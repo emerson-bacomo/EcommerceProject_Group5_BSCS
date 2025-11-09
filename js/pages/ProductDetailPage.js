@@ -1,10 +1,10 @@
 import { getStarRatingHTML, html, getPriceRange, formatCurrency, getProductById, getHashParams } from "../utils/helpers.js";
-import { setupImageViewer } from "../components/ImageViewer.js";
 import { showToast } from "../components/Toast.js";
 import { navigateTo } from "../utils/navigation.js";
 import { S } from "../state.js";
 import { findCartItem, findCartItemByKey } from "./CartPage.js";
 import { saveUserData } from "../utils/storage.js";
+import { ImageViewer } from "../components/ImageViewer.js";
 
 export function renderProductDetailPage(container) {
     const { id: productId, cartKey } = getHashParams();
@@ -18,7 +18,6 @@ export function renderProductDetailPage(container) {
         productId,
         selectedColor: null,
         selectedSize: null,
-        currentImageIndex: 0,
         totalImages: 0,
         colorImageMap: {},
         currentQuantity: 1,
@@ -70,78 +69,6 @@ export function renderProductDetailPage(container) {
     const initialPriceDisplay = getPriceRange(product);
 
     container.innerHTML = html` <style>
-            .image-viewer-container {
-                position: relative;
-                overflow: hidden;
-                border-radius: var(--bs-border-radius-lg);
-                border: 1px solid #dee2e6;
-                background-color: #fff;
-                user-select: none;
-            }
-            .image-slider {
-                display: flex;
-                transition: transform 0.3s ease-in-out;
-            }
-            .image-slide {
-                flex: 0 0 100%;
-                aspect-ratio: 1 / 1;
-            }
-            .image-slide img {
-                display: block;
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-            }
-            .image-viewer-arrow {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                background-color: rgba(0, 0, 0, 0.3);
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-                cursor: pointer;
-                z-index: 10;
-                opacity: 0.7;
-                transition: opacity 0.2s;
-            }
-            .image-viewer-arrow:hover {
-                opacity: 1;
-            }
-            .image-viewer-arrow.prev {
-                left: 10px;
-            }
-            .image-viewer-arrow.next {
-                right: 10px;
-            }
-            .image-indicators {
-                position: absolute;
-                bottom: 15px;
-                left: 50%;
-                transform: translateX(-50%);
-                display: flex;
-                gap: 8px;
-                z-index: 10;
-                background-color: rgba(0, 0, 0, 0.3);
-                padding: 0.5rem 1rem;
-                border-radius: 1rem;
-            }
-
-            .indicator {
-                width: 20px;
-                height: 5px;
-                background-color: rgba(255, 255, 255, 0.5);
-                border-radius: 2px;
-                transition: background-color 0.3s, width 0.3s;
-                cursor: pointer;
-            }
-            .indicator.active {
-                background-color: white;
-                width: 30px;
-            }
             .variation-thumbnails {
                 display: flex;
                 gap: 10px;
@@ -212,35 +139,8 @@ export function renderProductDetailPage(container) {
         </style>
         <div class="row">
             <div class="col-lg-6 mb-4">
-                <div class="image-viewer-container" id="image-viewer">
-                    <div class="image-slider" style="transform: translateX(0%);">
-                        ${allImages
-                            .map(
-                                (imgUrl) =>
-                                    html`
-                                        <div class="image-slide">
-                                            <img
-                                                src="${imgUrl}"
-                                                alt="${product.name}"
-                                                onerror="this.onerror=null;this.src='https://placehold.co/600x600/E2E8F0/4A5568?text=Image';"
-                                            />
-                                        </div>
-                                    `
-                            )
-                            .join("")}
-                    </div>
-                    ${allImages.length > 1
-                        ? html`
-                              <button class="image-viewer-arrow prev"><i class="fas fa-chevron-left"></i></button>
-                              <button class="image-viewer-arrow next"><i class="fas fa-chevron-right"></i></button>
-                              <div class="image-indicators">
-                                  ${allImages
-                                      .map((_, i) => `<div class="indicator ${i === 0 ? "active" : ""}" data-index="${i}"></div>`)
-                                      .join("")}
-                              </div>
-                          `
-                        : ""}
-                </div>
+                <image-viewer id="image-viewer" images="${encodeURIComponent(JSON.stringify(allImages))}"></image-viewer>
+
                 ${colors.length > 0 && !(colors.length === 1 && colors[0] === "Default")
                     ? html`
                           <div class="variation-thumbnails mt-3" id="variation-thumbs">
@@ -343,8 +243,6 @@ export function renderProductDetailPage(container) {
             </div>
         </div>`;
 
-    if (allImages.length > 1)
-        setupImageViewer(container.querySelector("#image-viewer"), allImages.length, S.currentProductDetailState);
     addVariationListeners(container, product);
 
     container.querySelector("#product-quantity-picker").addEventListener("change", (e) => {
@@ -518,9 +416,17 @@ function addVariationListeners(container, product) {
         variationThumbs?.querySelectorAll(".thumb-item").forEach((thumb) => {
             thumb.classList.toggle("active", thumb.dataset.color === selectedColor);
         });
-        if (selectedColor && imageViewer && typeof imageViewer.jumpToSlide === "function") {
+        if (selectedColor) {
             const imageIndex = S.currentProductDetailState.colorImageMap[selectedColor] ?? 0;
-            imageViewer.jumpToSlide(imageIndex);
+            if (imageViewer instanceof ImageViewer) {
+                imageViewer.jumpToSlide(imageIndex);
+            } else {
+                // Wait for upgrade
+                // customElements.whenDefined("image-viewer").then(() => {
+                //     const imageViewer = container.querySelector("image-viewer");
+                //     if (imageViewer) imageViewer.jumpToSlide(imageIndex);
+                // });
+            }
         }
         if (colorSelector) {
             colorSelector.querySelectorAll('input[name="productColor"]').forEach((input) => {
