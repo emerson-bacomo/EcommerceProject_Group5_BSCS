@@ -1,7 +1,7 @@
 import { showConfirmationModal, showToast } from "../components/Toast.js";
 import { statusColors } from "../config/general.js";
 import { S } from "../state.js";
-import { classNames, formatCurrency, getHashParams, getProductById, html, isMobile } from "../utils/helpers.js";
+import { formatCurrency, getHashParams, getProductById, html } from "../utils/helpers.js";
 import { navigateTo } from "../utils/navigation.js";
 import { saveUserData } from "../utils/storage.js";
 
@@ -60,7 +60,7 @@ export function renderOrderDetailPage(container) {
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="card mb-4">
-                    <div class="${classNames("card-header d-flex justify-content-between", isMobile() && "flex-column")}">
+                    <div class="card-header d-flex flex-wrap justify-content-between">
                         <span><strong>Order ID:</strong> ${order.id}</span
                         ><span><strong>Placed on:</strong> ${new Date(order.date).toLocaleString()}</span>
                     </div>
@@ -112,7 +112,7 @@ export function renderOrderDetailPage(container) {
         const actionsContainer = container.querySelector("#order-actions-container");
         actionsContainer.innerHTML = html`
             <div class="card">
-                <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
                     ${order.status === "Processing"
                         ? html`<span>Want to change something?</span>
                               <button class="btn btn-outline-danger" id="cancel-order-btn">Cancel Order</button>`

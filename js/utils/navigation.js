@@ -10,6 +10,11 @@ const scrollPositions = {};
 export function navigateTo(hash, options = {}) {
     const currentScrollY = window.scrollY; // Store first before innerHtml is cleared
 
+    if (options.replace) {
+        history.replaceState(null, "", hash);
+        return;
+    }
+
     if (currentCleanup) {
         currentCleanup();
         currentCleanup = null;
@@ -27,22 +32,8 @@ export function navigateTo(hash, options = {}) {
         return;
     }
 
-    const appShell = document.getElementById("app-shell");
-    const contentArea = appShell.querySelector("#app-content");
-    contentArea.innerHTML = "";
-
     const currentPageHash = window.location.hash;
     const pageKey = hash.split("?")[0].substring(1);
-
-    if (["home-view", "login-view", "signup-view"].includes(pageKey)) {
-        contentArea.className = pageKey === "home-view" ? "p-0" : "container";
-    } else {
-        contentArea.className = `container py-${!isMobile() ? 5 : 3}`;
-    }
-
-    // Navbar visibility
-    if (["login-view", "signup-view"].includes(pageKey)) navbar.style.display = "none";
-    else navbar.style.display = "block";
 
     if ((pageKey === "login-view" || pageKey === "signup-view") && !options.skipReturnTo) {
         if (existingReturnTo) hash = `#${pageKey}?returnTo=${encodeURIComponent(existingReturnTo)}`;
@@ -64,6 +55,20 @@ export function navigateTo(hash, options = {}) {
     }
 
     if (S.views[pageKey]) {
+        const appShell = document.getElementById("app-shell");
+        const contentArea = appShell.querySelector("#app-content");
+        contentArea.innerHTML = "";
+
+        if (["home-view", "login-view", "signup-view"].includes(pageKey)) {
+            contentArea.className = pageKey === "home-view" ? "p-0" : "container";
+        } else {
+            contentArea.className = `container py-${!isMobile() ? 5 : 3}`;
+        }
+
+        // Navbar visibility
+        if (["login-view", "signup-view"].includes(pageKey)) navbar.style.display = "none";
+        else navbar.style.display = "block";
+
         currentCleanup = S.views[pageKey](contentArea);
 
         if (options.preserveScroll) {
@@ -94,6 +99,7 @@ export function handleInitialNavigation() {
         } else if (S.protectedViews.includes(pageKey) && !S.currentUser) {
             navigateTo("#login-view");
         } else {
+            console.log(hash);
             navigateTo(hash, { preserveScroll: true });
         }
     } else {
