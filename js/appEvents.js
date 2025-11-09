@@ -15,7 +15,10 @@ export function setupAppListeners() {
                 navigateTo("#login-view");
                 return;
             }
-            navigateTo(`#${pageKey}`);
+            let hash = `#${pageKey}`;
+            const pageParams = pageLink.dataset.pageParams;
+            if (pageParams) hash += `?${pageParams}`;
+            navigateTo(hash);
         }
 
         const productCard = e.target.closest("product-card");

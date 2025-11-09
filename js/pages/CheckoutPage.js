@@ -90,14 +90,20 @@ export function renderCheckoutPage(container) {
             <div class="col-md-7">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>Shipping Address</h4>
-                    <a href="#" data-page="address-management-view">Edit</a>
+                    <a href="#" data-page="address-management-view" data-page-params="fromCheckout=true">Edit</a>
                 </div>
                 ${(S.appData.profile.addresses || []).length > 0
                     ? addressOptions
                     : html`
                           <div class="alert alert-warning">
                               You have no saved addresses. Please
-                              <a href="#" data-page="address-management-view" class="alert-link">add one</a>.
+                              <a
+                                  href="#"
+                                  data-page="address-management-view"
+                                  data-page-params="fromCheckout=true"
+                                  class="alert-link"
+                                  >add one</a
+                              >.
                           </div>
                       `}
 

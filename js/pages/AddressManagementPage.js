@@ -1,12 +1,12 @@
 import { S } from "../state.js";
-import { getAddressById, html } from "../utils/helpers.js";
+import { back, getAddressById, getHashParams, html } from "../utils/helpers.js";
 import { saveUserData } from "../utils/storage.js";
 import { navigateTo } from "../utils/navigation.js";
 import { showConfirmationModal } from "../components/Toast.js";
 import { mobileMaxWidthPlus1 } from "../config/general.js";
 
 export function renderAddressManagementPage(container) {
-    const fromCheckout = window.location.hash.endsWith("fromCheckout=true");
+    const fromCheckout = getHashParams().fromCheckout;
     const isMobile = window.innerWidth < mobileMaxWidthPlus1;
 
     const addressesHTML = (S.appData.profile.addresses || [])
@@ -47,7 +47,7 @@ export function renderAddressManagementPage(container) {
         <div class="d-flex align-items-center gap-2 mb-4">
             ${fromCheckout
                 ? html`
-                      <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center" data-page="checkout-view">
+                      <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center" id="back-btn">
                           <i class="fas fa-arrow-left fs-5"></i>
                       </button>
                   `
@@ -125,6 +125,8 @@ export function renderAddressManagementPage(container) {
             </div>
         </div>
     `;
+
+    container.querySelector("#back-btn").addEventListener("click", back);
 
     const addForm = document.querySelector("#add-address-form");
     addForm.addEventListener("submit", (e) => {
