@@ -148,11 +148,11 @@ export function renderCartPage(container) {
                                         "btn btn-sm btn-outline-danger remove-item-btn",
                                         isMobile() && "ms-auto"
                                     )}"
-                                    style="width: 31px; height: 31px;"
+                                    style="width: 26px; height: 26px; font-size: 0.6rem;"
                                     data-cart-key="${itemIdentifier}"
                                     aria-label="Remove item"
                                 >
-                                    &times;
+                                    <i class="fa-solid fa-x"></i>
                                 </button>
                             </div>
                         </div>
@@ -165,7 +165,7 @@ export function renderCartPage(container) {
     container.innerHTML = html`
         <style>
             .cart-variation-select {
-                width: 120px;
+                width: fit-content;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
