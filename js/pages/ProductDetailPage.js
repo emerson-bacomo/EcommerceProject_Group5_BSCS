@@ -58,6 +58,8 @@ export function renderProductDetailPage(container) {
     }
     S.currentProductDetailState.totalImages = allImages.length;
 
+    const imageIndex = S.currentProductDetailState.colorImageMap[S.currentProductDetailState.selectedColor] ?? 0;
+
     const colors = product.variations && product.variations.color ? Object.keys(product.variations.color) : [];
     const sizes = new Set();
     if (product.variations && product.variations.color) {
@@ -139,7 +141,11 @@ export function renderProductDetailPage(container) {
         </style>
         <div class="row">
             <div class="col-lg-6 mb-4">
-                <image-viewer id="image-viewer" images="${encodeURIComponent(JSON.stringify(allImages))}"></image-viewer>
+                <image-viewer
+                    id="image-viewer"
+                    images="${encodeURIComponent(JSON.stringify(allImages))}"
+                    initial-index="${imageIndex}"
+                ></image-viewer>
 
                 ${colors.length > 0 && !(colors.length === 1 && colors[0] === "Default")
                     ? html`
@@ -420,12 +426,6 @@ function addVariationListeners(container, product) {
             const imageIndex = S.currentProductDetailState.colorImageMap[selectedColor] ?? 0;
             if (imageViewer instanceof ImageViewer) {
                 imageViewer.jumpToSlide(imageIndex);
-            } else {
-                // Wait for upgrade
-                // customElements.whenDefined("image-viewer").then(() => {
-                //     const imageViewer = container.querySelector("image-viewer");
-                //     if (imageViewer) imageViewer.jumpToSlide(imageIndex);
-                // });
             }
         }
         if (colorSelector) {

@@ -1,3 +1,4 @@
+import { mobileMaxWidthPlus1 } from "../config/general.js";
 import { clamp, html } from "../utils/helpers.js";
 
 export class ImageViewer extends HTMLElement {
@@ -9,10 +10,12 @@ export class ImageViewer extends HTMLElement {
         this.currentIndex = 0;
         this.overlayOpen = false;
 
-        // Bind handlers so that they can still have access to "this" even when they add added to event listeners
+        this.carouselInstance = null;
+
         this.handlePrev = this.handlePrev.bind(this);
         this.handleNext = this.handleNext.bind(this);
         this.openFullscreen = this.openFullscreen.bind(this);
+        this.handleSlide = this.handleSlide.bind(this);
     }
 
     connectedCallback() {
@@ -25,31 +28,10 @@ export class ImageViewer extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = html`
+        this.commonStyles = html`
             <style>
-                :host {
-                    display: block;
-                    position: relative;
-                    overflow: hidden;
-                    border-radius: var(--bs-border-radius-lg);
-                    border: 1px solid #dee2e6;
-                    background-color: #fff;
-                }
-                .image-slider {
-                    display: flex;
-                    transition: transform 0.3s ease-in-out;
-                }
-                .image-slide {
-                    flex: 0 0 100%;
-                    aspect-ratio: 1 / 1;
-                }
-                .image-slide img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    cursor: pointer;
-                }
-                .arrow {
+                .carousel-control-prev,
+                .carousel-control-next {
                     position: absolute;
                     top: 50%;
                     transform: translateY(-50%);
@@ -59,26 +41,32 @@ export class ImageViewer extends HTMLElement {
                     border-radius: 50%;
                     width: 40px;
                     height: 40px;
-                    font-size: 1.2rem;
                     cursor: pointer;
                     z-index: 10;
                     opacity: 0.7;
                     transition: opacity 0.2s;
                 }
-                .arrow:hover {
+                .carousel-control-prev-icon,
+                .carousel-control-next-icon {
+                    width: 20px;
+                    height: 20px;
+                }
+                .carousel-control-prev:hover,
+                .carousel-control-next:hover {
                     opacity: 1;
                 }
-                .arrow.prev {
+                .carousel-control-prev {
                     left: 10px;
                 }
-                .arrow.next {
+                .carousel-control-next {
                     right: 10px;
                 }
-                .indicators {
+
+                .carousel-indicators {
                     position: absolute;
                     bottom: 15px;
-                    left: 50%;
-                    transform: translateX(-50%);
+                    width: fit-content;
+                    margin: 0 auto;
                     display: flex;
                     gap: 8px;
                     z-index: 10;
@@ -87,32 +75,94 @@ export class ImageViewer extends HTMLElement {
                     border-radius: 1rem;
                 }
 
-                .indicator {
+                .carousel-indicators button {
                     width: 20px;
                     height: 5px;
                     background-color: rgba(255, 255, 255, 0.5);
                     border-radius: 2px;
                     transition: background-color 0.3s, width 0.3s;
                     cursor: pointer;
+                    border: none;
                 }
-                .indicator.active {
+                .carousel-indicators button.active {
                     background-color: white;
                     width: 30px;
                 }
+                @media (max-width: ${mobileMaxWidthPlus1}px) {
+                    .carousel-control-prev,
+                    .carousel-control-next {
+                        display: none;
+                    }
+                }
             </style>
-            <div class="image-viewer-container">
-                <div class="image-slider">
-                    ${this.images.map((img) => html` <div class="image-slide"><img src="${img}" /></div> `).join("")}
-                </div>
+        `;
+
+        this.shadowRoot.innerHTML = html`
+            <style>
+                @import "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
+                :host {
+                    display: block;
+                    position: relative;
+                    border-radius: var(--bs-border-radius-lg);
+                    border: 1px solid #dee2e6;
+                    background-color: #fff;
+                    overflow: hidden;
+                }
+                .carousel-item {
+                    aspect-ratio: 1 / 1;
+                }
+                .carousel-item img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    cursor: pointer;
+                }
+            </style>
+            ${this.commonStyles}
+
+            <div id="image-viewer-carousel" class="carousel slide" data-bs-interval="false">
                 ${this.images.length > 1
                     ? html`
-                          <button class="arrow prev">&#10094;</button>
-                          <button class="arrow next">&#10095;</button>
-                          <div class="indicators">
+                          <div class="carousel-indicators">
                               ${this.images
-                                  .map((_, i) => `<div class="indicator ${i === 0 ? "active" : ""}" data-index="${i}"></div>`)
+                                  .map(
+                                      (_, i) => html`
+                                          <button
+                                              type="button"
+                                              data-bs-slide-to="${i}"
+                                              class="${i === this.currentIndex ? "active" : ""}"
+                                              aria-current="${i === this.currentIndex}"
+                                              aria-label="Slide ${i + 1}"
+                                          ></button>
+                                      `
+                                  )
                                   .join("")}
                           </div>
+                      `
+                    : ""}
+
+                <div class="carousel-inner">
+                    ${this.images
+                        .map(
+                            (img, i) => html`
+                                <div class="carousel-item ${i === this.currentIndex ? "active" : ""}">
+                                    <img src="${img}" class="d-block w-100" alt="Slide ${i + 1}" />
+                                </div>
+                            `
+                        )
+                        .join("")}
+                </div>
+
+                ${this.images.length > 1
+                    ? html`
+                          <button class="carousel-control-prev" type="button">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next" type="button">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                          </button>
                       `
                     : ""}
             </div>
@@ -120,92 +170,78 @@ export class ImageViewer extends HTMLElement {
     }
 
     setupMainSlider() {
-        this.slider = this.shadowRoot.querySelector(".image-slider");
-        this.prevBtn = this.shadowRoot.querySelector(".arrow.prev");
-        this.nextBtn = this.shadowRoot.querySelector(".arrow.next");
-        this.indicators = this.shadowRoot.querySelectorAll(".indicator");
+        this.carouselEl = this.shadowRoot.querySelector("#image-viewer-carousel");
 
-        this.updateVisuals(this.currentIndex);
-
-        if (this.prevBtn) this.prevBtn.addEventListener("click", this.handlePrev);
-        if (this.nextBtn) this.nextBtn.addEventListener("click", this.handleNext);
-        this.indicators.forEach((ind) => {
-            ind.addEventListener("click", () => {
-                this.currentIndex = parseInt(ind.dataset.index, 10);
-                this.updateVisuals(this.currentIndex);
-            });
+        // eslint-disable-next-line no-undef
+        this.carouselInstance = new bootstrap.Carousel(this.carouselEl, {
+            interval: false,
+            wrap: true,
+            touch: true,
         });
 
-        this.slider.querySelectorAll("img").forEach((img) => {
+        this.carouselEl.addEventListener("slid.bs.carousel", this.handleSlide);
+
+        this.setupCarouselListeners(this.shadowRoot);
+
+        this.shadowRoot.querySelectorAll(".carousel-item img").forEach((img) => {
             img.addEventListener("click", this.openFullscreen);
         });
+    }
 
-        // Touch drag support
-        let startX = 0;
-        let isDragging = false;
-        let currentTranslate = -this.currentIndex * 100;
+    setupCarouselListeners(container) {
+        // Manually add click listeners since it seems like data-bs isn't accessed if in shadow dom
 
-        this.slider.addEventListener(
-            "touchstart",
-            (e) => {
-                startX = e.touches[0].clientX;
-                isDragging = true;
-                this.slider.style.transition = "none";
-            },
-            { passive: true }
-        );
+        const prevBtn = container.querySelector(".carousel-control-prev");
+        const nextBtn = container.querySelector(".carousel-control-next");
+        const indicators = container.querySelectorAll(".carousel-indicators button");
 
-        this.slider.addEventListener(
-            "touchmove",
-            (e) => {
-                if (!isDragging) return;
-                const diffX = e.touches[0].clientX - startX;
-                this.slider.style.transform = `translateX(${currentTranslate + (diffX / this.slider.offsetWidth) * 100}%)`;
-            },
-            { passive: true }
-        );
-
-        this.slider.addEventListener("touchend", (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            this.slider.style.transition = "transform 0.3s ease-in-out";
-            const diffX = e.changedTouches[0].clientX - startX;
-            const threshold = this.slider.offsetWidth / 4;
-            if (diffX > threshold) this.handlePrev();
-            else if (diffX < -threshold) this.handleNext();
-            else this.updateVisuals(this.currentIndex);
+        if (prevBtn) {
+            prevBtn.addEventListener("click", this.handlePrev);
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener("click", this.handleNext);
+        }
+        indicators.forEach((ind) => {
+            ind.addEventListener("click", (e) => {
+                const index = e.currentTarget.getAttribute("data-bs-slide-to");
+                this.jumpToSlide(parseInt(index, 10));
+            });
         });
+    }
+
+    handleSlide(event) {
+        this.currentIndex = event.to;
     }
 
     handlePrev() {
-        this.currentIndex = this.currentIndex - 1 < 0 ? this.images.length - 1 : this.currentIndex - 1;
-        this.updateVisuals(this.currentIndex);
+        if (this.carouselInstance) {
+            this.carouselInstance.prev();
+        }
     }
 
     handleNext() {
-        this.currentIndex = this.currentIndex + 1 >= this.images.length ? 0 : this.currentIndex + 1;
-        this.updateVisuals(this.currentIndex);
+        if (this.carouselInstance) {
+            this.carouselInstance.next();
+        }
     }
 
     jumpToSlide(index) {
-        this.currentIndex = clamp(index, 0, this.images.length - 1);
-        this.updateVisuals(this.currentIndex);
-    }
-
-    updateVisuals(index) {
-        const translate = -index * 100;
-        this.slider.style.transform = `translateX(${translate}%)`;
-        this.indicators.forEach((ind, i) => ind.classList.toggle("active", i === index));
+        const newIndex = clamp(index, 0, this.images.length - 1);
+        if (this.carouselInstance) {
+            this.carouselInstance.to(newIndex);
+        }
     }
 
     openFullscreen() {
-        if (this.overlayOpen) return;
+        if (this.overlayOpen || typeof bootstrap === "undefined") return;
         this.overlayOpen = true;
 
         const overlay = document.createElement("div");
         overlay.className = "fullscreen-overlay";
+        const overlayId = `fullscreen-carousel-${Date.now()}`;
 
         overlay.innerHTML = html`
+            ${this.commonStyles}
             <style>
                 .fullscreen-overlay {
                     position: fixed;
@@ -215,199 +251,125 @@ export class ImageViewer extends HTMLElement {
                     align-items: center;
                     background: rgba(0, 0, 0, 0.9);
                     z-index: 10000;
-                    overflow: hidden;
                 }
-                .fullscreen-overlay .f-wrapper {
-                    display: flex;
+                .fullscreen-overlay .carousel {
                     width: 100%;
                     height: 100%;
-                    transition: transform 0.3s ease-in-out;
-                    will-change: transform;
                 }
-                .fullscreen-overlay .f-slide {
-                    flex: 0 0 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                .fullscreen-overlay .carousel-inner,
+                .fullscreen-overlay .carousel-item {
+                    height: 100%;
                 }
-                .fullscreen-overlay .f-slide img {
-                    max-width: 95vw;
-                    max-height: 90vh;
-                    object-fit: contain;
+                .fullscreen-overlay .carousel-item {
+                    position: relative;
+                    height: 100%;
                 }
 
-                .f-button {
+                .fullscreen-overlay .carousel-item img {
                     position: absolute;
                     top: 50%;
-                    transform: translateY(-50%);
-                    background-color: rgba(0, 0, 0, 0.3);
-                    color: white;
-                    border: none;
-                    border-radius: 50%;
-                    width: 40px;
-                    height: 40px;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    z-index: 10;
-                    opacity: 0.7;
-                    transition: opacity 0.2s;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    max-width: 98%;
+                    max-height: 85vh;
+                    object-fit: contain;
                 }
-                .f-button:hover {
-                    opacity: 1;
-                }
-                .f-button.prev {
-                    left: 15px;
-                }
-                .f-button.next {
-                    right: 15px;
-                }
-
                 .f-button.close {
+                    position: absolute;
                     top: 20px;
                     right: 20px;
                     font-size: 2rem;
                     line-height: 1;
                     background: transparent;
-                    transform: none;
+                    color: white;
+                    border: none;
+                    opacity: 0.7;
+                    z-index: 10001;
+                    transition: opacity 0.2s;
                 }
-                .f-indicators {
-                    position: absolute;
-                    bottom: 15px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    display: flex;
-                    gap: 8px;
-                    z-index: 10;
-                    background-color: rgba(0, 0, 0, 0.3);
-                    padding: 0.5rem 1rem;
-                    border-radius: 1rem;
-                }
-
-                .f-indicator {
-                    width: 20px;
-                    height: 5px;
-                    background-color: rgba(255, 255, 255, 0.5);
-                    border-radius: 2px;
-                    transition: background-color 0.3s, width 0.3s;
-                    cursor: pointer;
-                }
-                .f-indicator.active {
-                    background-color: white;
-                    width: 30px;
+                .f-button.close:hover {
+                    opacity: 1;
                 }
             </style>
 
-            <div class="f-wrapper">
-                ${this.images
-                    .map(
-                        (src) => html`
-                            <div class="f-slide">
-                                <img src="${src}" alt="Fullscreen image" />
-                            </div>
-                        `
-                    )
-                    .join("")}
+            <div id="${overlayId}" class="carousel slide" data-bs-interval="false">
+                <div class="carousel-indicators">
+                    ${this.images
+                        .map(
+                            (_, i) => html`
+                                <button
+                                    type="button"
+                                    data-bs-slide-to="${i}"
+                                    class="${i === this.currentIndex ? "active" : ""}"
+                                    aria-current="${i === this.currentIndex}"
+                                ></button>
+                            `
+                        )
+                        .join("")}
+                </div>
+
+                <div class="carousel-inner">
+                    ${this.images
+                        .map(
+                            (img, i) => html`
+                                <div class="carousel-item ${i === this.currentIndex ? "active" : ""}">
+                                    <img src="${img}" alt="Fullscreen image" />
+                                </div>
+                            `
+                        )
+                        .join("")}
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#${overlayId}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#${overlayId}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
             </div>
 
-            <button class="f-button prev">&#10094;</button>
-            <button class="f-button next">&#10095;</button>
             <button class="f-button close">&times;</button>
-
-            ${this.images.length > 1
-                ? html`
-                      <div class="f-indicators">
-                          ${this.images.map((_, i) => html`<div class="f-indicator" data-index="${i}"></div>`).join("")}
-                      </div>
-                  `
-                : ""}
         `;
 
         document.body.appendChild(overlay);
 
-        const wrapper = overlay.querySelector(".f-wrapper");
-        const prevBtn = overlay.querySelector(".f-button.prev");
-        const nextBtn = overlay.querySelector(".f-button.next");
+        const fsCarouselEl = overlay.querySelector(`#${overlayId}`);
+        // eslint-disable-next-line no-undef
+        const fsCarouselInstance = new bootstrap.Carousel(fsCarouselEl, {
+            interval: false,
+            wrap: true,
+            touch: true,
+        });
+
+        fsCarouselInstance.to(this.currentIndex);
+
+        this.setupCarouselListeners(overlay); // Add manual listener so that the main carousel also slides
+
+        const indicators = overlay.querySelectorAll(".carousel-indicators button"); // Manually do this since data-bs-target is difficult to style
+        indicators.forEach((ind) => {
+            ind.addEventListener("click", (e) => {
+                const index = e.currentTarget.getAttribute("data-bs-slide-to");
+                fsCarouselInstance.to(index);
+            });
+        });
+
         const closeBtn = overlay.querySelector(".f-button.close");
-        const indicators = overlay.querySelectorAll(".f-indicator");
-
-        let currentTranslate = -this.currentIndex * 100;
-        let startX = 0;
-        let isDragging = false;
-
-        const updateOverlayVisuals = (index) => {
-            currentTranslate = -index * 100;
-            wrapper.style.transform = `translateX(${currentTranslate}%)`;
-            indicators.forEach((ind, i) => ind.classList.toggle("active", i === index));
-
-            this.currentIndex = index;
-            this.updateVisuals(index);
-        };
-
-        const prev = () => updateOverlayVisuals(this.currentIndex - 1 < 0 ? this.images.length - 1 : this.currentIndex - 1);
-        const next = () => updateOverlayVisuals(this.currentIndex + 1 >= this.images.length ? 0 : this.currentIndex + 1);
-
-        updateOverlayVisuals(this.currentIndex);
-
-        if (prevBtn) prevBtn.addEventListener("click", prev);
-        if (nextBtn) nextBtn.addEventListener("click", next);
 
         const closeOverlay = () => {
             if (!this.overlayOpen) return;
             this.overlayOpen = false;
+            fsCarouselInstance.dispose();
             overlay.remove();
             document.removeEventListener("keydown", handleKeyDown);
+            this.focus();
         };
 
         const handleKeyDown = (e) => {
-            if (!this.overlayOpen) return;
             if (e.key === "Escape") closeOverlay();
-            if (e.key === "ArrowLeft") prev();
-            if (e.key === "ArrowRight") next();
         };
 
         closeBtn.addEventListener("click", closeOverlay);
         document.addEventListener("keydown", handleKeyDown);
-
-        indicators.forEach((ind) => {
-            ind.addEventListener("click", () => {
-                updateOverlayVisuals(parseInt(ind.dataset.index, 10));
-            });
-        });
-
-        overlay.addEventListener(
-            "touchstart",
-            (e) => {
-                // Only start drag if touching the wrapper/image, not buttons
-                if (e.target.closest(".f-button, .f-indicators")) return;
-                startX = e.touches[0].clientX;
-                isDragging = true;
-                wrapper.style.transition = "none";
-            },
-            { passive: true }
-        );
-
-        overlay.addEventListener(
-            "touchmove",
-            (e) => {
-                if (!isDragging) return;
-                const diffX = e.touches[0].clientX - startX;
-                wrapper.style.transform = `translateX(${currentTranslate + (diffX / wrapper.offsetWidth) * 100}%)`;
-            },
-            { passive: true }
-        );
-
-        overlay.addEventListener("touchend", (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            wrapper.style.transition = "transform 0.3s ease-in-out";
-
-            const diffX = e.changedTouches[0].clientX - startX;
-            const threshold = wrapper.offsetWidth / 4;
-
-            if (diffX > threshold) prev();
-            else if (diffX < -threshold) next();
-            else updateOverlayVisuals(this.currentIndex); // Snap back
-        });
     }
 }
 
