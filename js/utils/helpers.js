@@ -117,3 +117,6 @@ export function getHashParams() {
 export function clamp(val, min, max) {
     return Math.min(Math.max(val, min), max);
 }
+
+export const getScrollSource = () => (isMobile() ? window : document.getElementById("app-content"));
+export const getScrollY = () => (isMobile() ? window.scrollY : document.getElementById("app-content").scrollTop);

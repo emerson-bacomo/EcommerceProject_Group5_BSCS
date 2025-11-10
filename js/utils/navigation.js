@@ -1,14 +1,14 @@
 import { closeMenu } from "../appEvents.js";
 import { navbar } from "../main.js";
 import { S } from "../state.js";
-import { getHashParams, isMobile } from "./helpers.js";
+import { getHashParams, getScrollSource, getScrollY, isMobile } from "./helpers.js";
 
 let currentCleanup = null;
 let lastHash = window.location.hash;
 const scrollPositions = {};
 
 export function navigateTo(hash, options = {}) {
-    const currentScrollY = window.scrollY; // Store first before innerHtml is cleared
+    const currentScrollY = getScrollY(); // Store first before innerHtml is cleared
 
     if (options.replace) {
         history.replaceState(null, "", hash);
@@ -73,7 +73,7 @@ export function navigateTo(hash, options = {}) {
 
         if (options.preserveScroll) {
             // Only preserve when needed like for back navigation, no need to preserve for normal navigation
-            window.scrollTo({ top: scrollPositions[hash] ?? 0, behavior: "instant" });
+            getScrollSource().scrollTo({ top: scrollPositions[hash] ?? 0, behavior: "instant" });
         }
     }
 }
@@ -110,7 +110,7 @@ export function setupNavigation() {
     window.addEventListener("hashchange", () => {
         // Save scroll of page being left
         if (lastHash) {
-            scrollPositions[lastHash] = window.scrollY;
+            scrollPositions[lastHash] = getScrollY();
         }
 
         // Update last known hash before navigating

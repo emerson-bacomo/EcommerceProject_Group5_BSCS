@@ -1,5 +1,5 @@
 import { products } from "../config/products.js";
-import { html } from "../utils/helpers.js";
+import { getScrollSource, getScrollY, html } from "../utils/helpers.js";
 import {
     setupCarouselListeners,
     setupCarouselArrowVisibility,
@@ -382,7 +382,7 @@ export function renderHomePage(container) {
 
     const scrollDownArrow = document.querySelector(".banner-scroll-down");
     function onScroll() {
-        const scrollY = window.scrollY;
+        const scrollY = getScrollY();
         if (scrollY > 50) {
             navbar.classList.remove("navbar-transparent-at-top");
             navbar.classList.add("navbar-white");
@@ -395,8 +395,8 @@ export function renderHomePage(container) {
         }
     }
     cleanUp.push(() => navbar.classList.remove("navbar-transparent-at-top"));
-    window.addEventListener("scroll", onScroll);
-    cleanUp.push(() => window.removeEventListener("scroll", onScroll));
+    getScrollSource().addEventListener("scroll", onScroll);
+    cleanUp.push(() => getScrollSource().removeEventListener("scroll", onScroll));
     onScroll();
 
     document.getElementById("homeBanner").addEventListener("click", (e) => {

@@ -4,14 +4,26 @@
     --bs-border-radius: 0.5rem;
     --bs-border-radius-lg: 0.75rem;
 }
-body {
-    background-color: #f8f9fa;
-    overflow-x: hidden;
-}
 
 #app-shell {
     background-color: #fff;
     min-height: 100vh;
+}
+
+/* Desktop only */
+@media (min-width: 577px) {
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden; /* prevent body scrolling */
+    }
+
+    #app-content {
+        height: 100vh; /* full viewport height */
+        overflow-y: auto; /* internal scroll only */
+        scrollbar-gutter: stable; /* reserve scrollbar space without shifting content */
+    }
 }
 
 .search-container {
