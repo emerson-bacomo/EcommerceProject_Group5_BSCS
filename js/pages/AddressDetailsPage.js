@@ -1,12 +1,10 @@
 import { S } from "../state.js";
-import { html, getAddressById, back } from "../utils/helpers.js";
+import { html, getAddressById, back, getHashParams } from "../utils/helpers.js";
 import { saveUserData } from "../utils/storage.js";
-import { navigateTo } from "../utils/navigation.js";
 import { showConfirmationModal } from "../components/Toast.js";
 
 export function renderAddressDetailsPage(container) {
-    const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
-    const id = parseInt(params.get("id"));
+    const { id } = getHashParams();
 
     container.innerHTML = html`
         <div class="d-flex align-items-center mb-5 gap-3">
@@ -19,7 +17,7 @@ export function renderAddressDetailsPage(container) {
 
     const addr = getAddressById(id);
     if (!addr) {
-        container.innerHTML += html` <p class="text-muted ps-5">Address not found.</p> `;
+        container.innerHTML += html`<p class="text-muted ps-5">Address not found.</p>`;
     } else {
         container.innerHTML += html`
             <form id="address-details-form" novalidate class="pb-5">
@@ -38,6 +36,11 @@ export function renderAddressDetailsPage(container) {
                     <input type="number" class="form-control" required id="edit-addr-phone" value="${addr.phone}" />
                 </div>
 
+                <div class="form-check mb-5">
+                    <input class="form-check-input" type="checkbox" id="edit-addr-default" ${addr.isDefault ? "checked" : ""} />
+                    <label class="form-check-label" for="edit-addr-default">Set as Default Address</label>
+                </div>
+
                 <div class="fixed-bottom bg-white border-top p-3 d-flex gap-2">
                     <button type="button" id="delete-address-btn" class="btn btn-danger flex-grow-1">Delete</button>
                     <button type="submit" class="btn btn-primary flex-grow-1">Save Changes</button>
@@ -53,20 +56,27 @@ export function renderAddressDetailsPage(container) {
                 return;
             }
 
-            const updated = {
-                ...addr,
-                name: document.getElementById("edit-addr-name").value.trim(),
-                address: document.getElementById("edit-addr-address").value.trim(),
-                phone: document.getElementById("edit-addr-phone").value.trim(),
-            };
+            const isDefault = document.getElementById("edit-addr-default").checked;
 
-            const index = (S.appData.profile.addresses || []).findIndex((a) => a.id === id);
-            if (index !== -1) {
-                S.appData.profile.addresses[index] = updated;
-                saveUserData(S.currentUser, S.appData);
-            }
+            const updatedAddresses = (S.appData.profile.addresses || []).map((a) => {
+                if (a.id === id) {
+                    return {
+                        ...a,
+                        name: document.getElementById("edit-addr-name").value.trim(),
+                        address: document.getElementById("edit-addr-address").value.trim(),
+                        phone: document.getElementById("edit-addr-phone").value.trim(),
+                        isDefault,
+                    };
+                }
+                return {
+                    ...a,
+                    isDefault: isDefault ? false : a.isDefault,
+                };
+            });
 
-            navigateTo("#address-management-view");
+            S.appData.profile.addresses = updatedAddresses;
+            saveUserData(S.currentUser, S.appData);
+            back();
         });
 
         document.getElementById("delete-address-btn").addEventListener("click", async () => {
@@ -80,7 +90,7 @@ export function renderAddressDetailsPage(container) {
 
             S.appData.profile.addresses = (S.appData.profile.addresses || []).filter((a) => a.id !== id);
             saveUserData(S.currentUser, S.appData);
-            navigateTo("#address-management-view");
+            back();
         });
     }
 

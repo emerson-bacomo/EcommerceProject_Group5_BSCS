@@ -1,13 +1,11 @@
 import { S } from "../state.js";
-import { back, getAddressById, getHashParams, html } from "../utils/helpers.js";
+import { back, getAddressById, getHashParams, html, isMobile } from "../utils/helpers.js";
 import { saveUserData } from "../utils/storage.js";
 import { navigateTo } from "../utils/navigation.js";
 import { showConfirmationModal } from "../components/Toast.js";
-import { mobileMaxWidthPlus1 } from "../config/general.js";
 
 export function renderAddressManagementPage(container) {
     const fromCheckout = getHashParams().fromCheckout;
-    const isMobile = window.innerWidth < mobileMaxWidthPlus1;
 
     const addressesHTML = (S.appData.profile.addresses || [])
         .map(
@@ -15,12 +13,22 @@ export function renderAddressManagementPage(container) {
                 <div class="card shadow-sm border-0 address-item p-3" data-id="${addr.id}">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="flex-grow-1 me-3">
-                            <h6 class="mb-1 fw-bold">${addr.name}</h6>
-                            <p class="mb-1 text-muted small">${addr.address}</p>
-                            <p class="mb-0 text-muted small">${addr.phone}</p>
+                            <h6 class="mb-0 fw-bold">${addr.name}</h6>
+                            <p class="mb-0 text-muted small">${addr.address}</p>
+                            <p class="mb-1 text-muted small">${addr.phone}</p>
+                            ${addr.isDefault
+                                ? html`
+                                      <div
+                                          class="badge text-primary border-primary border px-3 py-1 rounded-2 align-content-center"
+                                          style="font-size: 0.75rem; height: 1.6rem;"
+                                      >
+                                          Default
+                                      </div>
+                                  `
+                                : ""}
                         </div>
 
-                        ${!isMobile
+                        ${!isMobile()
                             ? html`
                                   <div class="d-flex gap-2 flex-shrink-0">
                                       <button
@@ -84,6 +92,11 @@ export function renderAddressManagementPage(container) {
                                 <label class="form-label">Phone Number</label>
                                 <input type="number" class="form-control" required id="addr-phone" />
                             </div>
+
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="addr-default" />
+                                <label class="form-check-label" for="addr-default">Set as Default Address</label>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -115,6 +128,11 @@ export function renderAddressManagementPage(container) {
                                 <label class="form-label">Phone Number</label>
                                 <input type="number" class="form-control" required id="edit-addr-phone" />
                             </div>
+
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="edit-addr-default" />
+                                <label class="form-check-label" for="edit-addr-default">Set as Default Address</label>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -136,12 +154,19 @@ export function renderAddressManagementPage(container) {
             return;
         }
 
-        const newAddresses = S.appData.profile.addresses || [];
+        const isDefault = document.getElementById("addr-default").checked;
+        let newAddresses = S.appData.profile.addresses || [];
+
+        if (isDefault) {
+            newAddresses = newAddresses.map((a) => ({ ...a, isDefault: false }));
+        }
+
         newAddresses.push({
             id: Date.now(),
             name: document.getElementById("addr-name").value.trim(),
             address: document.getElementById("addr-address").value.trim(),
             phone: document.getElementById("addr-phone").value.trim(),
+            isDefault,
         });
 
         S.appData.profile.addresses = newAddresses;
@@ -153,7 +178,7 @@ export function renderAddressManagementPage(container) {
         renderAddressManagementPage(container);
     });
 
-    if (!isMobile) {
+    if (!isMobile()) {
         let editId = null;
 
         document.querySelectorAll(".edit-btn").forEach((btn) => {
@@ -164,6 +189,7 @@ export function renderAddressManagementPage(container) {
                 document.getElementById("edit-addr-name").value = addr.name;
                 document.getElementById("edit-addr-address").value = addr.address;
                 document.getElementById("edit-addr-phone").value = addr.phone;
+                document.getElementById("edit-addr-default").checked = !!addr.isDefault;
             });
         });
 
@@ -178,13 +204,21 @@ export function renderAddressManagementPage(container) {
             const addrIndex = S.appData.profile.addresses.findIndex((a) => a.id === editId);
             if (addrIndex === -1) return;
 
-            S.appData.profile.addresses[addrIndex] = {
-                ...S.appData.profile.addresses[addrIndex],
+            let updatedAddresses = [...S.appData.profile.addresses];
+
+            updatedAddresses = updatedAddresses.map((a, i) => ({
+                ...a,
+                isDefault: i === addrIndex ? document.getElementById("edit-addr-default").checked : false,
+            }));
+
+            updatedAddresses[addrIndex] = {
+                ...updatedAddresses[addrIndex],
                 name: document.getElementById("edit-addr-name").value.trim(),
                 address: document.getElementById("edit-addr-address").value.trim(),
                 phone: document.getElementById("edit-addr-phone").value.trim(),
             };
 
+            S.appData.profile.addresses = updatedAddresses;
             saveUserData(S.currentUser, S.appData);
 
             // eslint-disable-next-line no-undef
@@ -200,11 +234,21 @@ export function renderAddressManagementPage(container) {
                 const addr = getAddressById(id);
                 if (!addr) return;
 
-                const bodyHTML = `
+                const bodyHTML = html`
                     <div class="text-start">
                         <p>Are you sure you want to delete this address?</p>
                         <div class="border rounded p-2 small">
-                            <strong>${addr.name}</strong><br>${addr.address}<br>${addr.phone}
+                            <strong>${addr.name}</strong><br />${addr.address}<br />${addr.phone}<br />
+                            ${addr.isDefault
+                                ? html`
+                                      <div
+                                          class="badge text-primary border-primary border mt-2 px-3 py-1 rounded-2 align-content-center"
+                                          style="font-size: 0.75rem; height: 1.6rem;"
+                                      >
+                                          Default
+                                      </div>
+                                  `
+                                : ""}
                         </div>
                     </div>
                 `;

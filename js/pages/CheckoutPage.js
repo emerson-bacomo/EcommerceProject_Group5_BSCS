@@ -39,7 +39,14 @@ export function renderCheckoutPage(container) {
     const subtotal = itemsToCheckout.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shippingFee = 0.0;
     const total = subtotal + shippingFee;
-    const addressOptions = (S.appData.profile.addresses || [])
+
+    const addresses = S.appData.profile.addresses || [];
+    const defaultIndex = Math.max(
+        addresses.findIndex((a) => a.isDefault),
+        0
+    );
+
+    const addressOptions = addresses
         .map(
             (addr, index) => html`
                 <label class="card card-body mb-2 position-relative w-100" for="address${index}" style="cursor: pointer;">
@@ -50,7 +57,7 @@ export function renderCheckoutPage(container) {
                             name="shippingAddress"
                             id="address${index}"
                             value="${index}"
-                            ${index === 0 ? "checked" : ""}
+                            ${index === defaultIndex ? "checked" : ""}
                             style="cursor: pointer;"
                         />
                         <div class="form-check-label w-100">
@@ -78,10 +85,32 @@ export function renderCheckoutPage(container) {
                 .card-body {
                     padding: 0.75rem;
                 }
+                .row {
+                    margin-right: 0;
+                    margin-left: 0;
+                }
+                .col-md-7, .col-md-5 {
+                    padding: 0;
+                }
+                .address-list {
+                    max-height: 30vh;
+                }
             }
             .list-group-item strong {
                 position: relative;
                 top: -3px;
+            }
+            .address-list {
+                max-height: 50vh;
+                overflow-y: auto;
+                padding-right: 6px; /* avoid scrollbar overlap */
+            }
+            .address-list::-webkit-scrollbar {
+                width: 8px;
+            }
+            .address-list::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
             }
         </style>
 
@@ -93,7 +122,7 @@ export function renderCheckoutPage(container) {
                     <a href="#" data-page="address-management-view" data-page-params="fromCheckout=true">Edit</a>
                 </div>
                 ${(S.appData.profile.addresses || []).length > 0
-                    ? addressOptions
+                    ? html`<div class="address-list">${addressOptions}</div>`
                     : html`
                           <div class="alert alert-warning">
                               You have no saved addresses. Please
@@ -185,6 +214,18 @@ export function renderCheckoutPage(container) {
             </div>
         </div>
     `;
+
+    // Scroll to the checked/default address after rendering
+    const addressList = container.querySelector(".address-list");
+    if (addressList) {
+        const checkedInput = addressList.querySelector('input[name="shippingAddress"]:checked');
+        if (checkedInput) {
+            const card = checkedInput.closest(".card");
+            if (card) {
+                card.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+    }
 
     document.querySelector("#place-order-btn").addEventListener("click", () => {
         const selectedAddressInput = document.querySelector('input[name="shippingAddress"]:checked');
