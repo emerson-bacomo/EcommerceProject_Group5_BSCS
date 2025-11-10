@@ -126,7 +126,7 @@ export function renderAddressManagementPage(container) {
         </div>
     `;
 
-    container.querySelector("#back-btn").addEventListener("click", back);
+    if (fromCheckout) container.querySelector("#back-btn").addEventListener("click", back);
 
     const addForm = document.querySelector("#add-address-form");
     addForm.addEventListener("submit", (e) => {
