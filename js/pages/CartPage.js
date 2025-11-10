@@ -296,6 +296,7 @@ export function renderCartPage(container) {
 
     document.querySelectorAll(".remove-item-btn").forEach((btn) => {
         btn.addEventListener("click", async (e) => {
+            const cartKey = e.currentTarget.dataset.cartKey; // Needs to be before await or else it would go empty
             const confirmed = await showConfirmationModal(
                 "Are you sure you want to remove this item from your cart?",
                 "Remove Item",
@@ -303,7 +304,7 @@ export function renderCartPage(container) {
                 "btn-danger"
             );
             if (confirmed) {
-                const itemToRemove = findCartItemByKey(e.target.dataset.cartKey);
+                const itemToRemove = findCartItemByKey(cartKey);
                 if (!itemToRemove) return;
                 S.appData.cart = (S.appData.cart || []).filter((item) => item !== itemToRemove);
                 saveUserData(S.currentUser, S.appData);
